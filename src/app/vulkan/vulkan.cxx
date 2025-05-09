@@ -13,10 +13,12 @@ Vulkan::Vulkan(Window &window)
 	pickPhysicalDevice();
     createLogicalDevice();
     createSwapChain();
+    createImageViews();
 }
 
 Vulkan::~Vulkan()
 {
+    destoryImageViews();
     destroySwapChain();
     destroyDevice();
 	destroyDebugMessager();

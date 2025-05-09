@@ -22,7 +22,9 @@ class Vulkan
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void createSwapChain();
+	void createImageViews();
 
+	void destoryImageViews();
 	void destroySwapChain();
 	void destroyDevice();
 	void destroyDebugMessager();
@@ -43,5 +45,6 @@ class Vulkan
 	std::vector<VkImage>     swapChainImages;
 	VkFormat                 swapChainImageFormat;
 	VkExtent2D               swapChainExtent;
+	std::vector<VkImageView> swapChainImageViews;
 };
 }        // namespace App
