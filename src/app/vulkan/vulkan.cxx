@@ -17,6 +17,7 @@ Vulkan::Vulkan(Window &window)
 
 Vulkan::~Vulkan()
 {
+    destroySwapChain();
     destroyDevice();
 	destroyDebugMessager();
     destroySurface();

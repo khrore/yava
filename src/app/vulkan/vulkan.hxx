@@ -2,8 +2,9 @@
 
 #define GLFW_INCLUDE_VULKAN 1
 
-#include <app/window.hxx>
 #include <GLFW/glfw3.h>
+#include <app/window.hxx>
+
 
 #include <app/pch.hxx>
 
@@ -21,8 +22,9 @@ class Vulkan
 	void createSurface();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
-    void createSwapChain();
+	void createSwapChain();
 
+    void destroySwapChain();
 	void destroyDevice();
 	void destroyDebugMessager();
 	void destroySurface();
@@ -38,5 +40,6 @@ class Vulkan
 	VkQueue                  graphicQueue;
 	VkQueue                  presentQueue;
 	VkSurfaceKHR             surface;
+	VkSwapchainKHR           swapChain;
 };
 }        // namespace App
