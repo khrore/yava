@@ -25,7 +25,7 @@ extern VkSurfaceFormatKHR chooseSwapSurfaceFormat(
 extern VkPresentModeKHR chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR> &avaliablePresentModes);
 
-VkExtent2D chooseSwapExtent(
+extern VkExtent2D chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR &capabilities,
     GLFWwindow                     *window);
 }        // namespace App

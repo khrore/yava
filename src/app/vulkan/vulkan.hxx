@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <app/window.hxx>
 
-
 #include <app/pch.hxx>
 
 namespace App
@@ -24,7 +23,7 @@ class Vulkan
 	void createLogicalDevice();
 	void createSwapChain();
 
-    void destroySwapChain();
+	void destroySwapChain();
 	void destroyDevice();
 	void destroyDebugMessager();
 	void destroySurface();
@@ -41,5 +40,8 @@ class Vulkan
 	VkQueue                  presentQueue;
 	VkSurfaceKHR             surface;
 	VkSwapchainKHR           swapChain;
+	std::vector<VkImage>     swapChainImages;
+	VkFormat                 swapChainImageFormat;
+	VkExtent2D               swapChainExtent;
 };
 }        // namespace App
