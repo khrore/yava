@@ -23,7 +23,9 @@ class Vulkan
 	void createLogicalDevice();
 	void createSwapChain();
 	void createImageViews();
+    void createGraphicsPipline();
 
+    void destroyGraphicsPipline();
 	void destoryImageViews();
 	void destroySwapChain();
 	void destroyDevice();
