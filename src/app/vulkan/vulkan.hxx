@@ -23,9 +23,9 @@ class Vulkan
 	void createLogicalDevice();
 	void createSwapChain();
 	void createImageViews();
-    void createGraphicsPipline();
+	void createGraphicsPipline();
 
-    void destroyGraphicsPipline();
+	void destroyGraphicsPipline();
 	void destoryImageViews();
 	void destroySwapChain();
 	void destroyDevice();
@@ -48,5 +48,6 @@ class Vulkan
 	VkFormat                 swapChainImageFormat;
 	VkExtent2D               swapChainExtent;
 	std::vector<VkImageView> swapChainImageViews;
+	VkPipelineLayout         pipelineLayout;
 };
 }        // namespace App
