@@ -54,12 +54,31 @@ void Vulkan::createGraphicsPipline()
 	VkShaderModule fragShaderModule =
 	    createShaderModule(fragShaderCode, device);
 
-    
+	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+	vertShaderStageInfo.sType =
+	    VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	vertShaderStageInfo.stage =
+	    VK_SHADER_STAGE_VERTEX_BIT;
+	vertShaderStageInfo.module = vertShaderModule;
+	vertShaderStageInfo.pName  = "main";
 
-    vkDestroyShaderModule(device, vertShaderModule, nullptr);
-    vkDestroyShaderModule(device, fragShaderModule, nullptr);
+	VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+	fragShaderStageInfo.sType =
+	    VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	fragShaderStageInfo.stage =
+	    VK_SHADER_STAGE_FRAGMENT_BIT;
+	fragShaderStageInfo.module = fragShaderModule;
+	fragShaderStageInfo.pName  = "main";
+
+	VkPipelineShaderStageCreateInfo shaderStages[]{
+	    vertShaderStageInfo,
+	    fragShaderStageInfo};
+
+	vkDestroyShaderModule(device, vertShaderModule, nullptr);
+	vkDestroyShaderModule(device, fragShaderModule, nullptr);
 }
 
-void Vulkan::destroyGraphicsPipline() {
+void Vulkan::destroyGraphicsPipline()
+{
 }
 }        // namespace App
