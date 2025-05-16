@@ -5,24 +5,28 @@ namespace App
 {
 Vulkan::Vulkan(Window &window)
 {
-    this->window = &window;
+	this->window = &window;
 
 	initInstance();
 	setupDebugMessenger();
-    createSurface();
+	createSurface();
 	pickPhysicalDevice();
-    createLogicalDevice();
-    createSwapChain();
-    createImageViews();
+	createLogicalDevice();
+	createSwapChain();
+	createImageViews();
+	createRenderPass();
+	createGraphicsPipline();
 }
 
 Vulkan::~Vulkan()
 {
-    destoryImageViews();
-    destroySwapChain();
-    destroyDevice();
+	destroyGraphicsPipline();
+	destroyRenderPass();
+	destoryImageViews();
+	destroySwapChain();
+	destroyDevice();
 	destroyDebugMessager();
-    destroySurface();
+	destroySurface();
 	destroyInstance();
 }
 }        // namespace App

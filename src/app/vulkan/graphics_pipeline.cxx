@@ -1,5 +1,6 @@
 #include "vulkan.hxx"
 
+#include <iostream>
 #include <fstream>
 
 namespace App
@@ -27,7 +28,7 @@ VkShaderModule createShaderModule(const std::vector<char> &code, VkDevice &devic
 // TODO: add file name to throw error
 static std::vector<char> readFile(const std::string &filename)
 {
-	std::fstream file(filename, std::ios::ate | std::ios::binary);
+	std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
 	if (!file.is_open())
 	{
@@ -46,8 +47,8 @@ static std::vector<char> readFile(const std::string &filename)
 
 void Vulkan::createGraphicsPipline()
 {
-	auto vertShaderCode = readFile("spv/vert.spv");
-	auto fragShaderCode = readFile("spv/frag.spv");
+	auto vertShaderCode = readFile("shaders/vert.spv");
+	auto fragShaderCode = readFile("shaders/frag.spv");
 
 	VkShaderModule vertShaderModule =
 	    createShaderModule(vertShaderCode, device);
