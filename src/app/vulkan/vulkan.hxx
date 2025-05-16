@@ -52,5 +52,6 @@ class Vulkan
 	std::vector<VkImageView> swapChainImageViews;
 	VkRenderPass             renderPass;
 	VkPipelineLayout         pipelineLayout;
+	VkPipeline               graphicPipeline;
 };
 }        // namespace App
