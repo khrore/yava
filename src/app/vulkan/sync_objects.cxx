@@ -9,6 +9,7 @@ void Vulkan::createSyncObjects()
 
 	VkFenceCreateInfo fenceInfo{};
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 	if (vkCreateSemaphore(
 	        device,

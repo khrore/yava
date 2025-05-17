@@ -19,10 +19,12 @@ Vulkan::Vulkan(Window &window)
 	createFramebuffer();
 	createCommandPool();
 	createCommandBuffer();
+    createSyncObjects();
 }
 
 Vulkan::~Vulkan()
 {
+    destroySyncObjects();
 	destroyCommandBuffer();
 	destroyCommandPool();
 	destroyFramebuffer();
