@@ -25,7 +25,9 @@ class Vulkan
 	void createImageViews();
 	void createRenderPass();
 	void createGraphicsPipline();
+	void createFramebuffer();
 
+	void destroyFramebuffer();
 	void destroyGraphicsPipline();
 	void destroyRenderPass();
 	void destoryImageViews();
@@ -38,20 +40,21 @@ class Vulkan
   private:
 	Window *window;
 
-	VkInstance               instance;
-	VkDebugUtilsMessengerEXT debugMessenger;
-	VkPhysicalDevice         physicalDevice;
-	VkDevice                 device;
-	VkQueue                  graphicQueue;
-	VkQueue                  presentQueue;
-	VkSurfaceKHR             surface;
-	VkSwapchainKHR           swapChain;
-	std::vector<VkImage>     swapChainImages;
-	VkFormat                 swapChainImageFormat;
-	VkExtent2D               swapChainExtent;
-	std::vector<VkImageView> swapChainImageViews;
-	VkRenderPass             renderPass;
-	VkPipelineLayout         pipelineLayout;
-	VkPipeline               graphicPipeline;
+	VkInstance                 instance;
+	VkDebugUtilsMessengerEXT   debugMessenger;
+	VkPhysicalDevice           physicalDevice;
+	VkDevice                   device;
+	VkQueue                    graphicQueue;
+	VkQueue                    presentQueue;
+	VkSurfaceKHR               surface;
+	VkSwapchainKHR             swapChain;
+	std::vector<VkImage>       swapChainImages;
+	VkFormat                   swapChainImageFormat;
+	VkExtent2D                 swapChainExtent;
+	std::vector<VkImageView>   swapChainImageViews;
+	VkRenderPass               renderPass;
+	VkPipelineLayout           pipelineLayout;
+	VkPipeline                 graphicPipeline;
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 };
 }        // namespace App
