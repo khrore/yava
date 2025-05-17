@@ -15,6 +15,8 @@ class Vulkan
 	Vulkan(Window &window);
 	~Vulkan();
 
+	void drawFrame();
+
   private:
 	void initInstance();
 	void setupDebugMessenger();
@@ -28,7 +30,9 @@ class Vulkan
 	void createFramebuffer();
 	void createCommandPool();
 	void createCommandBuffer();
+	void createSyncObjects();
 
+	void destroySyncObjects();
 	void destroyCommandBuffer();
 	void destroyCommandPool();
 	void destroyFramebuffer();
@@ -64,5 +68,8 @@ class Vulkan
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkCommandPool              commandPool;
 	VkCommandBuffer            commandBuffer;
+	VkSemaphore                imageAvailableSemaphore;
+	VkSemaphore                renderFinishedSemaphore;
+	VkFence                    inFlightFance;
 };
 }        // namespace App

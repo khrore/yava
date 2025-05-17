@@ -15,6 +15,7 @@ void Triangle::mainLoop()
 	while (!glfwWindowShouldClose(&window.get()))
 	{
 		glfwPollEvents();
+        vulkan.drawFrame();
 	}
 }
 }        // namespace App
