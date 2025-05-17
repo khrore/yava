@@ -41,6 +41,8 @@ class Vulkan
 	void destroySurface();
 	void destroyInstance();
 
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
   private:
 	Window *window;
 
