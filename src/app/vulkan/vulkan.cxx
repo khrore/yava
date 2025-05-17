@@ -16,12 +16,16 @@ Vulkan::Vulkan(Window &window)
 	createImageViews();
 	createRenderPass();
 	createGraphicsPipline();
-    createFramebuffer();
+	createFramebuffer();
+	createCommandPool();
+	createCommandBuffer();
 }
 
 Vulkan::~Vulkan()
 {
-    destroyFramebuffer();
+	destroyCommandBuffer();
+	destroyCommandPool();
+	destroyFramebuffer();
 	destroyGraphicsPipline();
 	destroyRenderPass();
 	destoryImageViews();
