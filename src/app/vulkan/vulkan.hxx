@@ -26,7 +26,9 @@ class Vulkan
 	void createRenderPass();
 	void createGraphicsPipline();
 	void createFramebuffer();
+    void createCommandPool();
 
+    void destroyCommandPool();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();
 	void destroyRenderPass();
@@ -56,5 +58,6 @@ class Vulkan
 	VkPipelineLayout           pipelineLayout;
 	VkPipeline                 graphicPipeline;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
+	VkCommandPool              commandPool;
 };
 }        // namespace App
