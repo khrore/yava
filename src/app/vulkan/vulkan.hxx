@@ -48,6 +48,9 @@ class Vulkan
 
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
+    void recreateSwapChain();
+    void cleanupSwapChain();
+
   private:
 	Window *window;
 

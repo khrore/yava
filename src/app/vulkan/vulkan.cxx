@@ -25,13 +25,11 @@ Vulkan::Vulkan(Window &window)
 
 Vulkan::~Vulkan()
 {
+    cleanupSwapChain();
     destroySyncObjects();
 	destroyCommandPool();
-	destroyFramebuffer();
 	destroyGraphicsPipline();
 	destroyRenderPass();
-	destoryImageViews();
-	destroySwapChain();
 	destroyDevice();
 	destroyDebugMessager();
 	destroySurface();

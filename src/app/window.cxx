@@ -12,7 +12,12 @@ Window::Window()
 	// make window disable resize for quality of life
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	// create window
-	window = glfwCreateWindow(Settings::WINDOW_WIDTH, Settings::WINDOW_HEIGHT, "Vulkan", nullptr, nullptr);
+	window = glfwCreateWindow(
+	    Settings::WINDOW_WIDTH,
+	    Settings::WINDOW_HEIGHT,
+	    "Vulkan",
+	    nullptr,
+	    nullptr);
 }
 
 Window::~Window()

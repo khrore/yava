@@ -86,6 +86,24 @@ void Vulkan::createSwapChain()
 	swapChainExtent      = extent;
 }
 
+void Vulkan::cleanupSwapChain()
+{
+    Vulkan::destroyFramebuffer();
+	Vulkan::destoryImageViews();
+    Vulkan::destroySwapChain();
+}
+
+void Vulkan::recreateSwapChain()
+{
+	vkDeviceWaitIdle(device);
+
+	cleanupSwapChain();
+
+	createSwapChain();
+	createImageViews();
+	createFramebuffer();
+}
+
 void Vulkan::destroySwapChain()
 {
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
