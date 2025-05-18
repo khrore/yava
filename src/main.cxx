@@ -1,9 +1,5 @@
 #include "app/triangle.hxx"
 
-#include <cstdlib>
-#include <exception>
-#include <iostream>
-
 int main()
 {
 	App::Triangle app;

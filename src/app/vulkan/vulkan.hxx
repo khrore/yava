@@ -3,9 +3,10 @@
 #define GLFW_INCLUDE_VULKAN 1
 
 #include <GLFW/glfw3.h>
-#include <app/window.hxx>
 
-#include <app/pch.hxx>
+#include "app/window.hxx"
+
+#include "app/pch.hxx"
 
 namespace App
 {
@@ -16,6 +17,7 @@ class Vulkan
 	~Vulkan();
 
 	void drawFrame();
+	void endDraw();
 
   private:
 	void initInstance();
@@ -33,7 +35,6 @@ class Vulkan
 	void createSyncObjects();
 
 	void destroySyncObjects();
-	void destroyCommandBuffer();
 	void destroyCommandPool();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();
@@ -50,26 +51,26 @@ class Vulkan
   private:
 	Window *window;
 
-	VkInstance                 instance;
-	VkDebugUtilsMessengerEXT   debugMessenger;
-	VkPhysicalDevice           physicalDevice;
-	VkDevice                   device;
-	VkQueue                    graphicQueue;
-	VkQueue                    presentQueue;
-	VkSurfaceKHR               surface;
-	VkSwapchainKHR             swapChain;
-	std::vector<VkImage>       swapChainImages;
-	VkFormat                   swapChainImageFormat;
-	VkExtent2D                 swapChainExtent;
-	std::vector<VkImageView>   swapChainImageViews;
-	VkRenderPass               renderPass;
-	VkPipelineLayout           pipelineLayout;
-	VkPipeline                 graphicPipeline;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-	VkCommandPool              commandPool;
-	VkCommandBuffer            commandBuffer;
-	VkSemaphore                imageAvailableSemaphore;
-	VkSemaphore                renderFinishedSemaphore;
-	VkFence                    inFlightFance;
+	VkInstance                   instance;
+	VkDebugUtilsMessengerEXT     debugMessenger;
+	VkPhysicalDevice             physicalDevice;
+	VkDevice                     device;
+	VkQueue                      graphicQueue;
+	VkQueue                      presentQueue;
+	VkSurfaceKHR                 surface;
+	VkSwapchainKHR               swapChain;
+	std::vector<VkImage>         swapChainImages;
+	VkFormat                     swapChainImageFormat;
+	VkExtent2D                   swapChainExtent;
+	std::vector<VkImageView>     swapChainImageViews;
+	VkRenderPass                 renderPass;
+	VkPipelineLayout             pipelineLayout;
+	VkPipeline                   graphicPipeline;
+	std::vector<VkFramebuffer>   swapChainFramebuffers;
+	VkCommandPool                commandPool;
+	std::vector<VkCommandBuffer> commandBuffers;
+	std::vector<VkSemaphore>     imageAvailableSemaphores;
+	std::vector<VkSemaphore>     renderFinishedSemaphores;
+	std::vector<VkFence>         inFlightFances;
 };
 }        // namespace App

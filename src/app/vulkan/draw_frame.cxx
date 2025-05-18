@@ -1,38 +1,42 @@
 #include "vulkan.hxx"
 
+#include "settings/frames.hxx"
+
 namespace App
 {
 void Vulkan::drawFrame()
 {
+	uint32_t currentFrame = 0;
+
 	vkWaitForFences(
 	    device,
 	    1,
-	    &inFlightFance,
+	    &inFlightFances[currentFrame],
 	    VK_TRUE,
 	    UINT64_MAX);
 
 	vkResetFences(
 	    device,
 	    1,
-	    &inFlightFance);
+	    &inFlightFances[currentFrame]);
 
 	uint32_t imageIndex;
 	vkAcquireNextImageKHR(
 	    device,
 	    swapChain,
 	    UINT64_MAX,
-	    imageAvailableSemaphore,
+	    imageAvailableSemaphores[currentFrame],
 	    VK_NULL_HANDLE,
 	    &imageIndex);
 
-	vkResetCommandBuffer(commandBuffer, 0);
+	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
-	recordCommandBuffer(commandBuffer, imageIndex);
+	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore          waitSemaphores[] = {imageAvailableSemaphore};
+	VkSemaphore          waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
 	VkPipelineStageFlags waitStages[] =
 	    {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 	submitInfo.waitSemaphoreCount = 1;
@@ -40,9 +44,9 @@ void Vulkan::drawFrame()
 	submitInfo.pWaitDstStageMask  = waitStages;
 
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers    = &commandBuffer;
+	submitInfo.pCommandBuffers    = &commandBuffers[currentFrame];
 
-	VkSemaphore signalSemaphores[]  = {renderFinishedSemaphore};
+	VkSemaphore signalSemaphores[]  = {renderFinishedSemaphores[currentFrame]};
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores    = signalSemaphores;
 
@@ -50,7 +54,7 @@ void Vulkan::drawFrame()
 	        graphicQueue,
 	        1,
 	        &submitInfo,
-	        inFlightFance) != VK_SUCCESS)
+	        inFlightFances[currentFrame]) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to submit draw command buffer!");
 	}
@@ -69,5 +73,12 @@ void Vulkan::drawFrame()
 	presentInfo.pResults = nullptr;
 
 	vkQueuePresentKHR(presentQueue, &presentInfo);
+
+	currentFrame = (currentFrame + 1) % Settings::MAX_FRAMES_IN_FLIGHT;
+}
+
+void Vulkan::endDraw()
+{
+	vkDeviceWaitIdle(device);
 }
 }        // namespace App

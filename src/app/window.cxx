@@ -1,4 +1,5 @@
 #include "window.hxx"
+
 #include "app/settings/core.hxx"
 
 namespace App

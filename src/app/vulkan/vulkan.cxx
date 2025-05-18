@@ -1,4 +1,5 @@
 #include "vulkan.hxx"
+
 #include "app/window.hxx"
 
 namespace App
@@ -25,7 +26,6 @@ Vulkan::Vulkan(Window &window)
 Vulkan::~Vulkan()
 {
     destroySyncObjects();
-	destroyCommandBuffer();
 	destroyCommandPool();
 	destroyFramebuffer();
 	destroyGraphicsPipline();

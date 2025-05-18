@@ -2,7 +2,9 @@
 
 namespace App
 {
-Triangle::Triangle(): vulkan(window) {
+Triangle::Triangle() :
+    vulkan(window)
+{
 }
 
 void Triangle::run()
@@ -15,7 +17,8 @@ void Triangle::mainLoop()
 	while (!glfwWindowShouldClose(&window.get()))
 	{
 		glfwPollEvents();
-        vulkan.drawFrame();
+		vulkan.drawFrame();
 	}
+	vulkan.endDraw();
 }
 }        // namespace App
