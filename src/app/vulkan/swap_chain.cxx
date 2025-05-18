@@ -88,9 +88,9 @@ void Vulkan::createSwapChain()
 
 void Vulkan::cleanupSwapChain()
 {
-    Vulkan::destroyFramebuffer();
-	Vulkan::destoryImageViews();
-    Vulkan::destroySwapChain();
+	destroyFramebuffer();
+	destoryImageViews();
+	destroySwapChain();
 }
 
 void Vulkan::recreateSwapChain()
