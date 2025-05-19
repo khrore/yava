@@ -30,6 +30,29 @@ void Vulkan::drawFrame()
 	    VK_NULL_HANDLE,
 	    &imageIndex);
 
+	VkResult result = vkAcquireNextImageKHR(
+	    device,
+	    swapChain,
+	    UINT64_MAX,
+	    imageAvailableSemaphores[currentFrame],
+	    VK_NULL_HANDLE,
+	    &imageIndex);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		recreateSwapChain();
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+	{
+		throw std::runtime_error("failed to acquire swap chain images!");
+	}
+
+	vkResetFences(
+	    device,
+	    1,
+	    &inFlightFances[currentFrame]);
+
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
@@ -72,24 +95,6 @@ void Vulkan::drawFrame()
 	presentInfo.pImageIndices   = &imageIndex;
 
 	presentInfo.pResults = nullptr;
-
-	VkResult result = vkAcquireNextImageKHR(
-	    device,
-	    swapChain,
-	    UINT64_MAX,
-	    imageAvailableSemaphores[currentFrame],
-	    VK_NULL_HANDLE,
-	    &imageIndex);
-
-	if (result == VK_ERROR_OUT_OF_DATE_KHR)
-	{
-		recreateSwapChain();
-		return;
-	}
-	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-	{
-		throw std::runtime_error("failed to acquire swap chain images!");
-	}
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
