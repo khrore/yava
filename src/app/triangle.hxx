@@ -1,7 +1,7 @@
 #pragma once
 
 #include "app/vulkan/vulkan.hxx"
-#include "app/window.hxx"
+#include "app/window/window.hxx"
 
 namespace App
 {
@@ -9,6 +9,7 @@ class Triangle
 {
   public:
 	Triangle();
+    ~Triangle();
 
 	void run();
 
@@ -16,6 +17,8 @@ class Triangle
 	void mainLoop();
 
   private:
+    bool isFramebufferResized = false;
+
 	Window window;
 	Vulkan vulkan;
 };

@@ -95,6 +95,14 @@ void Vulkan::cleanupSwapChain()
 
 void Vulkan::recreateSwapChain()
 {
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(&window->get(), &width, &height);
+	while (width == 0 || height == 0)
+	{
+		glfwGetFramebufferSize(&window->get(), &width, &height);
+		glfwWaitEvents();
+	}
+
 	vkDeviceWaitIdle(device);
 
 	cleanupSwapChain();

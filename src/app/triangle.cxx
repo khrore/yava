@@ -1,10 +1,17 @@
 #include "triangle.hxx"
+#include "app/window/window.hxx"
 
 namespace App
 {
-Triangle::Triangle() :
-    vulkan(window)
+Triangle::Triangle()
 {
+    window.init(isFramebufferResized);
+    vulkan.init(window, isFramebufferResized);
+}
+
+Triangle::~Triangle() {
+    vulkan.destroy();
+    window.destroy();
 }
 
 void Triangle::run()

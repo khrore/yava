@@ -1,11 +1,12 @@
 #include "vulkan.hxx"
 
-#include "app/window.hxx"
+#include "app/window/window.hxx"
 
 namespace App
 {
-Vulkan::Vulkan(Window &window)
+void Vulkan::init(Window &window, bool &isFramebufferResized)
 {
+    this->isFramebufferResized = &isFramebufferResized;
 	this->window = &window;
 
 	initInstance();
@@ -23,9 +24,10 @@ Vulkan::Vulkan(Window &window)
     createSyncObjects();
 }
 
-Vulkan::~Vulkan()
+void Vulkan::destroy()
 {
     cleanupSwapChain();
+
     destroySyncObjects();
 	destroyCommandPool();
 	destroyGraphicsPipline();

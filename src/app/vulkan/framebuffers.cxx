@@ -28,6 +28,8 @@ namespace App {
                     throw std::runtime_error("failed to create framebuffer!");
                 }
         }
+
+
     }
     
     void Vulkan::destroyFramebuffer() {

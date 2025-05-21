@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "app/window.hxx"
+#include "app/window/window.hxx"
 
 #include "app/pch.hxx"
 
@@ -13,8 +13,8 @@ namespace App
 class Vulkan
 {
   public:
-	Vulkan(Window &window);
-	~Vulkan();
+    void init(Window &window, bool &isFramebufferResized);
+    void destroy();
 
 	void drawFrame();
 	void endDraw();
@@ -53,6 +53,7 @@ class Vulkan
 
   private:
 	Window *window;
+    bool *isFramebufferResized;
 
 	VkInstance                   instance;
 	VkDebugUtilsMessengerEXT     debugMessenger;
@@ -75,5 +76,7 @@ class Vulkan
 	std::vector<VkSemaphore>     imageAvailableSemaphores;
 	std::vector<VkSemaphore>     renderFinishedSemaphores;
 	std::vector<VkFence>         inFlightFances;
+
+    uint32_t currentFrame = 0;
 };
 }        // namespace App

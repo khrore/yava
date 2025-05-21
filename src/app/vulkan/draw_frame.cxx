@@ -1,14 +1,12 @@
 #include "vulkan.hxx"
 
 #include "settings/frames.hxx"
-#include <stdexcept>
+#include <debugapi.h>
 
 namespace App
 {
 void Vulkan::drawFrame()
 {
-	uint32_t currentFrame = 0;
-
 	vkWaitForFences(
 	    device,
 	    1,
@@ -16,20 +14,7 @@ void Vulkan::drawFrame()
 	    VK_TRUE,
 	    UINT64_MAX);
 
-	vkResetFences(
-	    device,
-	    1,
-	    &inFlightFances[currentFrame]);
-
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(
-	    device,
-	    swapChain,
-	    UINT64_MAX,
-	    imageAvailableSemaphores[currentFrame],
-	    VK_NULL_HANDLE,
-	    &imageIndex);
-
 	VkResult result = vkAcquireNextImageKHR(
 	    device,
 	    swapChain,
@@ -37,7 +22,7 @@ void Vulkan::drawFrame()
 	    imageAvailableSemaphores[currentFrame],
 	    VK_NULL_HANDLE,
 	    &imageIndex);
-
+    
 	if (result == VK_ERROR_OUT_OF_DATE_KHR)
 	{
 		recreateSwapChain();
@@ -98,8 +83,11 @@ void Vulkan::drawFrame()
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+	if (result == VK_ERROR_OUT_OF_DATE_KHR ||
+	    result == VK_SUBOPTIMAL_KHR ||
+	    *isFramebufferResized)
 	{
+		*isFramebufferResized = false;
 		recreateSwapChain();
 	}
 	else if (result != VK_SUCCESS)
