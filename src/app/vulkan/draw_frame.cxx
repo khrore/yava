@@ -85,9 +85,9 @@ void Vulkan::drawFrame()
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR ||
 	    result == VK_SUBOPTIMAL_KHR ||
-	    *isFramebufferResized)
+	    window->getIsFramebufferResized())
 	{
-		*isFramebufferResized = false;
+		window->setIsFramebufferResized(false);
 		recreateSwapChain();
 	}
 	else if (result != VK_SUCCESS)

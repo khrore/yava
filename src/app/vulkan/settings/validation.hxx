@@ -11,7 +11,7 @@ const std::vector<const char *> enabledValidationLayers = {
 #ifdef NDEBUG
 constexpr bool isEnableValidationLayers = false;
 #else
-constexpr bool isEnableValidationLayers = false;
+constexpr bool isEnableValidationLayers = true;
 #endif
 
 }        // namespace Settings

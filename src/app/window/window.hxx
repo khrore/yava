@@ -7,21 +7,25 @@ namespace App
 class Window
 {
   public:
-	void init(bool &isFramebufferResized);
-	void destroy();
+	Window();
+	~Window();
 
 	inline GLFWwindow &get()
 	{
 		return *window;
 	}
 
-	inline void setFramebufferResized(bool flag)
+	inline void setIsFramebufferResized(bool flag)
 	{
-		*isFramebufferResized = flag;
+		isFramebufferResized = flag;
+	}
+	inline bool getIsFramebufferResized()
+	{
+		return isFramebufferResized;
 	}
 
   private:
-	bool       *isFramebufferResized;
+	bool        isFramebufferResized = false;
 	GLFWwindow *window;
 };        // namespace Appclass AppWindow
 }        // namespace App

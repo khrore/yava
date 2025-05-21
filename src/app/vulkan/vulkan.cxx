@@ -4,9 +4,8 @@
 
 namespace App
 {
-void Vulkan::init(Window &window, bool &isFramebufferResized)
+Vulkan::Vulkan(Window &window)
 {
-    this->isFramebufferResized = &isFramebufferResized;
 	this->window = &window;
 
 	initInstance();
@@ -24,7 +23,7 @@ void Vulkan::init(Window &window, bool &isFramebufferResized)
     createSyncObjects();
 }
 
-void Vulkan::destroy()
+Vulkan::~Vulkan()
 {
     cleanupSwapChain();
 

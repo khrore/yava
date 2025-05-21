@@ -3,15 +3,9 @@
 
 namespace App
 {
-Triangle::Triangle()
+Triangle::Triangle() :
+    vulkan(window)
 {
-    window.init(isFramebufferResized);
-    vulkan.init(window, isFramebufferResized);
-}
-
-Triangle::~Triangle() {
-    vulkan.destroy();
-    window.destroy();
 }
 
 void Triangle::run()

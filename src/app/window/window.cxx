@@ -9,13 +9,11 @@ static void framebufferResizeCallback(GLFWwindow *window, int width, int height)
 {
 	auto app =
 	    reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
-    app->setFramebufferResized(true);
+    app->setIsFramebufferResized(true);
 }
 
-void Window::init(bool &isFramebufferResized)
+Window::Window()
 {
-    this->isFramebufferResized = &isFramebufferResized;
-
 	glfwInit();
 	// disable OpenGL
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -29,11 +27,11 @@ void Window::init(bool &isFramebufferResized)
 	    nullptr,
 	    nullptr);
     
-    // glfwSetWindowUserPointer(window, this);
-    // glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+    glfwSetWindowUserPointer(window, this);
+    glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 
-void Window::destroy()
+Window::~Window()
 {
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -9,7 +9,6 @@ class Triangle
 {
   public:
 	Triangle();
-    ~Triangle();
 
 	void run();
 
@@ -17,8 +16,6 @@ class Triangle
 	void mainLoop();
 
   private:
-    bool isFramebufferResized = false;
-
 	Window window;
 	Vulkan vulkan;
 };

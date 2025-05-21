@@ -13,8 +13,8 @@ namespace App
 class Vulkan
 {
   public:
-    void init(Window &window, bool &isFramebufferResized);
-    void destroy();
+    Vulkan(Window &window);
+    ~Vulkan();
 
 	void drawFrame();
 	void endDraw();
@@ -53,7 +53,6 @@ class Vulkan
 
   private:
 	Window *window;
-    bool *isFramebufferResized;
 
 	VkInstance                   instance;
 	VkDebugUtilsMessengerEXT     debugMessenger;
