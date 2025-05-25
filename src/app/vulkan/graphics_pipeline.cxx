@@ -1,12 +1,30 @@
 #include "vulkan.hxx"
 
-#include "helpers/vertex_data.hxx"
+#include "helpers/shaders.hxx"
 
 #include <cstddef>
 #include <stdexcept>
+#include <fstream>
 
 namespace App
 {
+static std::vector<char> readFile(const std::string& filename) {
+    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+    if (!file.is_open()) {
+        throw std::runtime_error("failed to open file!");
+    }
+
+    size_t fileSize = (size_t) file.tellg();
+    std::vector<char> buffer(fileSize);
+
+    file.seekg(0);
+    file.read(buffer.data(), fileSize);
+    file.close();
+
+    return buffer;
+}
+
 void Vulkan::createGraphicsPipline()
 {
 	auto vertShaderCode = readFile("shaders/vert.spv");
@@ -53,17 +71,10 @@ void Vulkan::createGraphicsPipline()
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType =
 	    VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-
-	auto bindingDescription =
-	    Vertex::getBindingDescription();
-	auto attributeDescription = Vertex::getAttributeDescription();
-
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.pVertexBindingDescriptions    = &bindingDescription;
-	vertexInputInfo.vertexAttributeDescriptionCount =
-	    static_cast<uint32_t>(attributeDescription.size());
-	vertexInputInfo.pVertexAttributeDescriptions =
-	    attributeDescription.data();
+	vertexInputInfo.vertexBindingDescriptionCount   = 0;
+	vertexInputInfo.pVertexBindingDescriptions      = nullptr;        // optional
+	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	vertexInputInfo.pVertexAttributeDescriptions    = nullptr;        // optional
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType =

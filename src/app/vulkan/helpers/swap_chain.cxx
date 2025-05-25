@@ -6,7 +6,7 @@
 
 namespace App
 {
-SwapChainSupportDetails querySwapChainSupport(
+extern SwapChainSupportDetails querySwapChainSupport(
     VkPhysicalDevice physicalDevice,
     VkSurfaceKHR     surface)
 {
@@ -56,7 +56,7 @@ SwapChainSupportDetails querySwapChainSupport(
 
 // TODO: learn surafece formats
 // choose best format instade of first
-VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+extern VkSurfaceFormatKHR chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR> &avaliableFormats)
 {
 	for (const auto &avaliableFormat : avaliableFormats)
@@ -74,7 +74,7 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(
 
 // TODO: learn aspects of different present modes
 // and choose best one instade of selected
-VkPresentModeKHR chooseSwapPresentMode(
+extern VkPresentModeKHR chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR> &avaliablePresentModes)
 {
 	for (const auto &avaliablePresentMode : avaliablePresentModes)
@@ -87,7 +87,7 @@ VkPresentModeKHR chooseSwapPresentMode(
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D chooseSwapExtent(
+extern VkExtent2D chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR &capabilities,
     GLFWwindow                     *window)
 {

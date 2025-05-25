@@ -2,8 +2,9 @@
 
 #include <vector>
 
-namespace App {
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+namespace App
+{
+extern QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 {
 	QueueFamilyIndices indices;
 
@@ -50,4 +51,4 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceK
 	}
 	return indices;
 }
-}
+}        // namespace App
