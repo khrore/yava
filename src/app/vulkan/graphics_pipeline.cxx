@@ -3,26 +3,28 @@
 #include "helpers/shaders.hxx"
 
 #include <cstddef>
-#include <stdexcept>
 #include <fstream>
+#include <stdexcept>
 
 namespace App
 {
-static std::vector<char> readFile(const std::string& filename) {
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+static std::vector<char> readFile(const std::string &filename)
+{
+	std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
-    if (!file.is_open()) {
-        throw std::runtime_error("failed to open file!");
-    }
+	if (!file.is_open())
+	{
+		throw std::runtime_error("failed to open file!");
+	}
 
-    size_t fileSize = (size_t) file.tellg();
-    std::vector<char> buffer(fileSize);
+	size_t            fileSize = (size_t) file.tellg();
+	std::vector<char> buffer(fileSize);
 
-    file.seekg(0);
-    file.read(buffer.data(), fileSize);
-    file.close();
+	file.seekg(0);
+	file.read(buffer.data(), fileSize);
+	file.close();
 
-    return buffer;
+	return buffer;
 }
 
 void Vulkan::createGraphicsPipline()
@@ -71,10 +73,17 @@ void Vulkan::createGraphicsPipline()
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType =
 	    VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount   = 0;
-	vertexInputInfo.pVertexBindingDescriptions      = nullptr;        // optional
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
-	vertexInputInfo.pVertexAttributeDescriptions    = nullptr;        // optional
+
+	auto bindingDescription =
+	    Vertex::getBindingDescription();
+	auto attributeDescriptions =
+	    Vertex::getAttributeDescriptions();
+
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.pVertexBindingDescriptions    = &bindingDescription;        // optional
+	vertexInputInfo.vertexAttributeDescriptionCount =
+	    static_cast<uint32_t>(attributeDescriptions.size());
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();        // optional
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType =

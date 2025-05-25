@@ -1,5 +1,7 @@
 #include "shaders.hxx"
 
+#include <stdexcept>
+
 namespace App {
 extern VkShaderModule createShaderModule(
     const std::vector<char> &code,
