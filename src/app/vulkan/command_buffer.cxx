@@ -7,7 +7,7 @@ namespace App
 void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
 {
 	VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	beginInfo.sType            = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	beginInfo.flags            = 0;              // optional
 	beginInfo.pInheritanceInfo = nullptr;        // optional
 
@@ -35,6 +35,22 @@ void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 	    commandBuffer,
 	    VK_PIPELINE_BIND_POINT_GRAPHICS,
 	    graphicPipeline);
+
+	VkBuffer     vertexBuffers[] = {vertexBuffer};
+	VkDeviceSize offsets[]       = {0};
+	vkCmdBindVertexBuffers(
+	    commandBuffer,
+	    0,
+	    1,
+	    vertexBuffers,
+	    offsets);
+
+	vkCmdDraw(
+	    commandBuffer,
+	    static_cast<uint32_t>(vertices.size()),
+	    1,
+	    0,
+	    0);
 
 	VkViewport viewport{};
 	viewport.x        = 0.0f;
@@ -70,7 +86,7 @@ void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 
 void Vulkan::createCommandBuffer()
 {
-    commandBuffers.resize(Settings::MAX_FRAMES_IN_FLIGHT);
+	commandBuffers.resize(Settings::MAX_FRAMES_IN_FLIGHT);
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.commandPool        = commandPool;
