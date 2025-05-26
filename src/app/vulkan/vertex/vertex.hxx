@@ -1,15 +1,7 @@
-#include <cstddef>
-#include <glm/glm.hpp>
 #include <vulkan/vulkan.h>
+#include <glm/glm.hpp>
 
 #include <array>
-#include <vector>
-
-namespace App
-{
-extern VkShaderModule createShaderModule(
-    const std::vector<char> &code,
-    VkDevice                &device);
 
 struct Vertex
 {
@@ -44,10 +36,3 @@ struct Vertex
 		return attributeDescriptions;
 	}
 };
-
-const std::vector<Vertex> vertices = {
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
-
-}        // namespace App

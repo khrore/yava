@@ -19,15 +19,17 @@ Vulkan::Vulkan(Window &window)
 	createGraphicsPipline();
 	createFramebuffer();
 	createCommandPool();
+	createVertexBuffer();
 	createCommandBuffer();
-    createSyncObjects();
+	createSyncObjects();
 }
 
 Vulkan::~Vulkan()
 {
-    cleanupSwapChain();
+	cleanupSwapChain();
 
-    destroySyncObjects();
+	destroyVertexBuffer();
+	destroySyncObjects();
 	destroyCommandPool();
 	destroyGraphicsPipline();
 	destroyRenderPass();

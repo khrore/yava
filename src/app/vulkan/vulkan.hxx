@@ -1,10 +1,10 @@
 #pragma ones
 
 #define GLFW_INCLUDE_VULKAN 1
-
 #include <GLFW/glfw3.h>
 
 #include "app/window/window.hxx"
+#include "vertex/vertex.hxx"
 
 #include "app/pch.hxx"
 
@@ -13,8 +13,8 @@ namespace App
 class Vulkan
 {
   public:
-    Vulkan(Window &window);
-    ~Vulkan();
+	Vulkan(Window &window);
+	~Vulkan();
 
 	void drawFrame();
 	void endDraw();
@@ -31,9 +31,11 @@ class Vulkan
 	void createGraphicsPipline();
 	void createFramebuffer();
 	void createCommandPool();
+	void createVertexBuffer();
 	void createCommandBuffer();
 	void createSyncObjects();
 
+	void destroyVertexBuffer();
 	void destroySyncObjects();
 	void destroyCommandPool();
 	void destroyFramebuffer();
@@ -48,8 +50,8 @@ class Vulkan
 
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
-    void recreateSwapChain();
-    void cleanupSwapChain();
+	void recreateSwapChain();
+	void cleanupSwapChain();
 
   private:
 	Window *window;
@@ -76,6 +78,12 @@ class Vulkan
 	std::vector<VkSemaphore>     renderFinishedSemaphores;
 	std::vector<VkFence>         inFlightFances;
 
-    uint32_t currentFrame = 0;
+	uint32_t currentFrame = 0;
+
+	const std::vector<Vertex> vertices = {
+	    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+	    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+	    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+	VkBuffer vertexBuffer;
 };
 }        // namespace App
