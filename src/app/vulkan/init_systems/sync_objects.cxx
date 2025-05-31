@@ -1,6 +1,6 @@
-#include "vulkan.hxx"
+#include "app/vulkan/vulkan.hxx"
 
-#include "settings/frames.hxx"
+#include "app/vulkan/settings/frames.hxx"
 
 namespace App
 {

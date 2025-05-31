@@ -22,5 +22,6 @@ target_link_libraries(${PROJECT_NAME} glfw glm Vulkan::Vulkan)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   "${PROJECT_BINARY_DIR}/../src"
+  "${PROJECT_BINARY_DIR}/../src/"
   "${PROJECT_BINARY_DIR}/../libs"
   "${PROJECT_BINARY_DIR}/../libs/glfw/include")

@@ -1,7 +1,7 @@
-#include "vulkan.hxx"
+#include "app/vulkan/vulkan.hxx"
 
-#include "settings/validation.hxx"
-#include "helpers/debug.hxx"
+#include "app/vulkan/settings/validation.hxx"
+#include "app/vulkan/helpers/debug.hxx"
 
 namespace App
 {

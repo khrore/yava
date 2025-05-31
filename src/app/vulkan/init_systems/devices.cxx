@@ -1,10 +1,10 @@
-#include "vulkan.hxx"
+#include "app/vulkan/vulkan.hxx"
 
-#include "settings/extensions.hxx"
-#include "settings/validation.hxx"
+#include "app/vulkan/settings/extensions.hxx"
+#include "app/vulkan/settings/validation.hxx"
 
-#include "helpers/queue.hxx"
-#include "helpers/swap_chain.hxx"
+#include "app/vulkan/helpers/queue.hxx"
+#include "app/vulkan/helpers/swap_chain.hxx"
 
 #include <set>
 

@@ -1,7 +1,7 @@
-#include "vulkan.hxx"
+#include "app/vulkan/vulkan.hxx"
 
-#include "helpers/queue.hxx"
-#include "helpers/swap_chain.hxx"
+#include "app/vulkan/helpers/queue.hxx"
+#include "app/vulkan/helpers/swap_chain.hxx"
 
 #include <cstddef>
 
