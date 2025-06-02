@@ -45,12 +45,6 @@ void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 	    vertexBuffers,
 	    offsets);
 
-	vkCmdDraw(
-	    commandBuffer,
-	    static_cast<uint32_t>(vertices.size()),
-	    1,
-	    0,
-	    0);
 
 	VkViewport viewport{};
 	viewport.x        = 0.0f;
@@ -74,7 +68,12 @@ void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 	    1,
 	    &scissor);
 
-	vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+	vkCmdDraw(
+	    commandBuffer,
+	    static_cast<uint32_t>(vertices.size()),
+	    1,
+	    0,
+	    0);
 
 	vkCmdEndRenderPass(commandBuffer);
 

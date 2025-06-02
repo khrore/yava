@@ -100,10 +100,10 @@ void Vulkan::createGraphicsPipline()
 	    Vertex::getAttributeDescriptions();
 
 	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.pVertexBindingDescriptions    = &bindingDescription;        // optional
+	vertexInputInfo.pVertexBindingDescriptions    = &bindingDescription;
 	vertexInputInfo.vertexAttributeDescriptionCount =
 	    static_cast<uint32_t>(attributeDescriptions.size());
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();        // optional
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType =
