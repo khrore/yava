@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "app/window/window.hxx"
-#include "vertex/vertex.hxx"
+#include "helpers/vertex.hxx"
 
 #include "app/pch.hxx"
 
