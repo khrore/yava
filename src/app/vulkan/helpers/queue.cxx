@@ -37,7 +37,7 @@ extern QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkS
 			indices.presentFamily = queueFamilyIndex;
 		}
 
-		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+		if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT)
 		{
 			indices.graphicsFamily = queueFamilyIndex;
 		}
