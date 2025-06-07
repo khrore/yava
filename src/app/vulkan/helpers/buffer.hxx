@@ -10,4 +10,12 @@ extern void createBuffer(
     VkMemoryPropertyFlags properties,
     VkBuffer             &buffer,
     VkDeviceMemory       &bufferMemory);
-}
+
+extern void copyBuffer(
+    VkDevice      device,
+    VkCommandPool commandPool,
+    VkQueue       graphicQueue,
+    VkBuffer      srcBuffer,
+    VkBuffer      dstBuffer,
+    VkDeviceSize  size);
+}        // namespace App
