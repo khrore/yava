@@ -13,13 +13,16 @@ Vulkan::Vulkan(Window &window)
 	createSurface();
 	pickPhysicalDevice();
 	createLogicalDevice();
+
 	createSwapChain();
 	createImageViews();
 	createRenderPass();
 	createGraphicsPipline();
 	createFramebuffer();
 	createCommandPool();
+
 	createVertexBuffer();
+	createIndexBuffer();
 	createCommandBuffer();
 	createSyncObjects();
 }
@@ -28,11 +31,14 @@ Vulkan::~Vulkan()
 {
 	cleanupSwapChain();
 
-	destroyVertexBuffer();
 	destroySyncObjects();
 	destroyCommandPool();
+	destroyIndexBuffer();
+	destroyVertexBuffer();
+
 	destroyGraphicsPipline();
 	destroyRenderPass();
+
 	destroyDevice();
 	destroyDebugMessager();
 	destroySurface();

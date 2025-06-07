@@ -45,6 +45,11 @@ void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 	    vertexBuffers,
 	    offsets);
 
+	vkCmdBindIndexBuffer(
+	    commandBuffer,
+	    indexBuffer,
+	    0,
+	    VK_INDEX_TYPE_UINT16);
 
 	VkViewport viewport{};
 	viewport.x        = 0.0f;
@@ -68,10 +73,11 @@ void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 	    1,
 	    &scissor);
 
-	vkCmdDraw(
+	vkCmdDrawIndexed(
 	    commandBuffer,
-	    static_cast<uint32_t>(vertices.size()),
+	    static_cast<uint32_t>(indices.size()),
 	    1,
+	    0,
 	    0,
 	    0);
 
