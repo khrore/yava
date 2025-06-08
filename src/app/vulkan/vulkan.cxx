@@ -27,6 +27,7 @@ Vulkan::Vulkan(Window &window)
 	createUniformBuffers();
 
 	createDescriptorPool();
+	createDescriptorSets();
 	createCommandBuffer();
 	createSyncObjects();
 }
@@ -35,6 +36,7 @@ Vulkan::~Vulkan()
 {
 	cleanupSwapChain();
 
+	destroyDescriptorPool();
 	destrpyDescriptorSetLayout();
 	destroySyncObjects();
 	destroyCommandPool();

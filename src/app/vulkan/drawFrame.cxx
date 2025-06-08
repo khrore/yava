@@ -22,7 +22,7 @@ void Vulkan::drawFrame()
 	    imageAvailableSemaphores[currentFrame],
 	    VK_NULL_HANDLE,
 	    &imageIndex);
-    
+
 	if (result == VK_ERROR_OUT_OF_DATE_KHR)
 	{
 		recreateSwapChain();
@@ -40,7 +40,9 @@ void Vulkan::drawFrame()
 
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
+
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
+	updateUniformBuffer(currentFrame);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

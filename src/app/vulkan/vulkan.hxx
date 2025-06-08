@@ -6,7 +6,11 @@
 #include "app/window/window.hxx"
 #include "helpers/vertex.hxx"
 
-#include "app/pch.hxx"
+#include <cstdint>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 namespace App
 {
@@ -39,6 +43,7 @@ class Vulkan
 	void createUniformBuffers();
 
 	void createDescriptorPool();
+	void createDescriptorSets();
 	void createCommandBuffer();
 	void createSyncObjects();
 
@@ -47,6 +52,7 @@ class Vulkan
 	void destroyVertexBuffer();
 
 	void destroySyncObjects();
+	void destroyDescriptorPool();
 	void destroyCommandPool();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();
@@ -86,6 +92,8 @@ class Vulkan
 
 	VkRenderPass                 renderPass;
 	VkDescriptorSetLayout        descriptorSetLayout;
+	VkDescriptorPool             descriptorPool;
+	std::vector<VkDescriptorSet> descriptorSets;
 	VkPipelineLayout             pipelineLayout;
 	VkPipeline                   graphicPipeline;
 	VkCommandPool                commandPool;
@@ -114,6 +122,6 @@ class Vulkan
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
 	std::vector<void *>         uniformBuffersMapped;
 
-	float startTime;
+	float startTime = 0;
 };
 }        // namespace App

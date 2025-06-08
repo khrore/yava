@@ -4,6 +4,7 @@
 #include "app/vulkan/helpers/buffer.hxx"
 
 #include "app/vulkan/settings/frames.hxx"
+#include <stdexcept>
 
 #define GLM_FORCE_RADIANS 1
 #include "glm/glm.hpp"
@@ -42,6 +43,78 @@ void Vulkan::createDescriptorSetLayout()
 	    VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+}
+
+void Vulkan::createDescriptorPool()
+{
+	VkDescriptorPoolSize poolSize{};
+	poolSize.type            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSize.descriptorCount = static_cast<uint32_t>(Settings::MAX_FRAMES_IN_FLIGHT);
+
+	VkDescriptorPoolCreateInfo poolInfo{};
+	poolInfo.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.poolSizeCount = 1;
+	poolInfo.pPoolSizes    = &poolSize;
+	poolInfo.maxSets       = static_cast<uint32_t>(Settings::MAX_FRAMES_IN_FLIGHT);
+
+	if (vkCreateDescriptorPool(
+	        device,
+	        &poolInfo,
+	        nullptr,
+	        &descriptorPool) !=
+	    VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to create desciptor pool!");
+	}
+}
+
+void Vulkan::createDescriptorSets()
+{
+	std::vector<VkDescriptorSetLayout> layouts(
+	    Settings::MAX_FRAMES_IN_FLIGHT,
+	    descriptorSetLayout);
+	VkDescriptorSetAllocateInfo allocInfo{};
+	allocInfo.sType          = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = descriptorPool;
+	allocInfo.descriptorSetCount =
+	    static_cast<uint32_t>(Settings::MAX_FRAMES_IN_FLIGHT);
+	allocInfo.pSetLayouts = layouts.data();
+
+	descriptorSets.resize(Settings::MAX_FRAMES_IN_FLIGHT);
+	if (vkAllocateDescriptorSets(
+	        device,
+	        &allocInfo,
+	        descriptorSets.data()) !=
+	    VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to allocate desciptor sets!");
+	}
+
+	for (size_t i = 0; i < Settings::MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		VkDescriptorBufferInfo bufferInfo{};
+		bufferInfo.buffer = uniformBuffers[i];
+		bufferInfo.offset = 0;
+		bufferInfo.range  = sizeof(UniformBufferObject);
+
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType            = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet           = descriptorSets[i];
+		descriptorWrite.dstBinding       = 0;
+		descriptorWrite.dstArrayElement  = 0;
+		descriptorWrite.descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount  = 1;
+		descriptorWrite.pBufferInfo      = &bufferInfo;
+		descriptorWrite.pImageInfo       = nullptr;        // optional
+		descriptorWrite.pTexelBufferView = nullptr;        // optional
+
+		vkUpdateDescriptorSets(
+		    device,
+		    1,
+		    &descriptorWrite,
+		    0,
+		    nullptr);
 	}
 }
 
@@ -114,6 +187,14 @@ void Vulkan::destroyUniformBuffers()
 		    uniformBuffersMemory[i],
 		    nullptr);
 	}
+}
+
+void Vulkan::destroyDescriptorPool()
+{
+	vkDestroyDescriptorPool(
+	    device,
+	    descriptorPool,
+	    nullptr);
 }
 
 void Vulkan::destrpyDescriptorSetLayout()
