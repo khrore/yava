@@ -17,6 +17,7 @@ Vulkan::Vulkan(Window &window)
 	createSwapChain();
 	createImageViews();
 	createRenderPass();
+	createDescriptorSetLayout();
 	createGraphicsPipline();
 	createFramebuffer();
 	createCommandPool();
@@ -31,6 +32,7 @@ Vulkan::~Vulkan()
 {
 	cleanupSwapChain();
 
+    destrpyDescriptorSetLayout();
 	destroySyncObjects();
 	destroyCommandPool();
 	destroyIndexBuffer();

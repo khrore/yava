@@ -1,4 +1,4 @@
-#include "swap_chain.hxx"
+#include "swapChain.hxx"
 
 #include <algorithm>
 #include <cstdint>

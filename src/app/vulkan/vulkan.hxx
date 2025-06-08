@@ -28,6 +28,7 @@ class Vulkan
 	void createSwapChain();
 	void createImageViews();
 	void createRenderPass();
+	void createDescriptorSetLayout();
 	void createGraphicsPipline();
 	void createFramebuffer();
 	void createCommandPool();
@@ -42,6 +43,7 @@ class Vulkan
 	void destroyCommandPool();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();
+	void destrpyDescriptorSetLayout();
 	void destroyRenderPass();
 	void destoryImageViews();
 	void destroySwapChain();
@@ -74,6 +76,7 @@ class Vulkan
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
 	VkRenderPass                 renderPass;
+	VkDescriptorSetLayout        descriptorSetLayout;
 	VkPipelineLayout             pipelineLayout;
 	VkPipeline                   graphicPipeline;
 	VkCommandPool                commandPool;

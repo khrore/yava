@@ -4,7 +4,7 @@
 #include "app/vulkan/settings/validation.hxx"
 
 #include "app/vulkan/helpers/queue.hxx"
-#include "app/vulkan/helpers/swap_chain.hxx"
+#include "app/vulkan/helpers/swapChain.hxx"
 
 #include <set>
 
