@@ -1,5 +1,13 @@
+#include "GLFW/glfw3.h"
 #include "app/vulkan/vulkan.hxx"
-#include <stdexcept>
+
+#include "app/vulkan/helpers/buffer.hxx"
+
+#include "app/vulkan/settings/frames.hxx"
+
+#define GLM_FORCE_RADIANS 1
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace App
 {
@@ -37,10 +45,82 @@ void Vulkan::createDescriptorSetLayout()
 	}
 }
 
-void Vulkan::destrpyDescriptorSetLayout() {
-    vkDestroyDescriptorSetLayout(
-        device, 
-        descriptorSetLayout, 
-        nullptr);
+void Vulkan::createUniformBuffers()
+{
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+	uniformBuffers.resize(Settings::MAX_FRAMES_IN_FLIGHT);
+	uniformBuffersMemory.resize(Settings::MAX_FRAMES_IN_FLIGHT);
+	uniformBuffersMapped.resize(Settings::MAX_FRAMES_IN_FLIGHT);
+
+	for (size_t i = 0; i < Settings::MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		createBuffer(
+		    device,
+		    physicalDevice,
+		    bufferSize,
+		    VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+		        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		    uniformBuffers[i],
+		    uniformBuffersMemory[i]);
+
+		vkMapMemory(
+		    device,
+		    uniformBuffersMemory[i],
+		    0,
+		    bufferSize,
+		    0,
+		    &uniformBuffersMapped[i]);
+	}
+}
+
+void Vulkan::updateUniformBuffer(uint32_t currentFrame)
+{
+	float time = (float) glfwGetTime() - startTime;
+	startTime  = (float) glfwGetTime();
+
+	UniformBufferObject ubo{};
+	ubo.model = glm::rotate(
+	    glm::mat4(1.0f),
+	    glm::radians(90.0f) * time,
+	    glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.view = glm::lookAt(
+	    glm::vec3(2.0f, 2.0f, 2.0f),
+	    glm::vec3(0.0f, 0.0f, 0.0f),
+	    glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.proj = glm::perspective(
+	    glm::radians(45.0f),
+	    swapChainExtent.width / (float) swapChainExtent.height,
+	    0.1f,
+	    10.0f);
+
+	// flip Y, because glm originaly designed for OpenGL
+	ubo.proj[1][1] *= -1;
+
+	memcpy(uniformBuffersMapped[currentFrame], &ubo, sizeof(ubo));
+}
+
+void Vulkan::destroyUniformBuffers()
+{
+	for (size_t i = 0; i < Settings::MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		vkDestroyBuffer(
+		    device,
+		    uniformBuffers[i],
+		    nullptr);
+		vkFreeMemory(
+		    device,
+		    uniformBuffersMemory[i],
+		    nullptr);
+	}
+}
+
+void Vulkan::destrpyDescriptorSetLayout()
+{
+	vkDestroyDescriptorSetLayout(
+	    device,
+	    descriptorSetLayout,
+	    nullptr);
 }
 }        // namespace App

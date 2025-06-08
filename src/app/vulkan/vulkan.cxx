@@ -24,6 +24,9 @@ Vulkan::Vulkan(Window &window)
 
 	createVertexBuffer();
 	createIndexBuffer();
+	createUniformBuffers();
+
+	createDescriptorPool();
 	createCommandBuffer();
 	createSyncObjects();
 }
@@ -32,9 +35,11 @@ Vulkan::~Vulkan()
 {
 	cleanupSwapChain();
 
-    destrpyDescriptorSetLayout();
+	destrpyDescriptorSetLayout();
 	destroySyncObjects();
 	destroyCommandPool();
+
+	destroyUniformBuffers();
 	destroyIndexBuffer();
 	destroyVertexBuffer();
 

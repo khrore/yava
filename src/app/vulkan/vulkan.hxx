@@ -25,6 +25,7 @@ class Vulkan
 	void createSurface();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
+
 	void createSwapChain();
 	void createImageViews();
 	void createRenderPass();
@@ -32,13 +33,19 @@ class Vulkan
 	void createGraphicsPipline();
 	void createFramebuffer();
 	void createCommandPool();
+
 	void createVertexBuffer();
 	void createIndexBuffer();
+	void createUniformBuffers();
+
+	void createDescriptorPool();
 	void createCommandBuffer();
 	void createSyncObjects();
 
+	void destroyUniformBuffers();
 	void destroyIndexBuffer();
 	void destroyVertexBuffer();
+
 	void destroySyncObjects();
 	void destroyCommandPool();
 	void destroyFramebuffer();
@@ -47,12 +54,14 @@ class Vulkan
 	void destroyRenderPass();
 	void destoryImageViews();
 	void destroySwapChain();
+
 	void destroyDevice();
 	void destroyDebugMessager();
 	void destroySurface();
 	void destroyInstance();
 
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+	void updateUniformBuffer(uint32_t currentFrame);
 
 	void recreateSwapChain();
 	void cleanupSwapChain();
@@ -100,5 +109,11 @@ class Vulkan
 	    0, 1, 2, 2, 3, 0};
 	VkBuffer       indexBuffer;
 	VkDeviceMemory indexBufferMemory;
+
+	std::vector<VkBuffer>       uniformBuffers;
+	std::vector<VkDeviceMemory> uniformBuffersMemory;
+	std::vector<void *>         uniformBuffersMapped;
+
+	float startTime;
 };
 }        // namespace App
