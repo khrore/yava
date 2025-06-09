@@ -40,8 +40,8 @@ void Vulkan::drawFrame()
 
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
-
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
+
 	updateUniformBuffer(currentFrame);
 
 	VkSubmitInfo submitInfo{};

@@ -123,5 +123,6 @@ class Vulkan
 	std::vector<void *>         uniformBuffersMapped;
 
 	float startTime = 0;
+    float rotate = 0;
 };
 }        // namespace App
