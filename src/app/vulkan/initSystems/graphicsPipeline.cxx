@@ -49,8 +49,8 @@ static std::vector<char> readFile(const std::string &filename)
 
 void Vulkan::createGraphicsPipline()
 {
-	auto vertShaderCode = readFile("shaders/vert.spv");
-	auto fragShaderCode = readFile("shaders/frag.spv");
+	auto vertShaderCode = readFile("assets/shaders/traingle.vert.spv");
+	auto fragShaderCode = readFile("assets/shaders/traingle.frag.spv");
 
 	VkShaderModule vertShaderModule =
 	    createShaderModule(vertShaderCode, device);

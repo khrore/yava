@@ -21,7 +21,40 @@ add_executable(${PROJECT_NAME} ${MAIN_SOURCES})
 target_link_libraries(${PROJECT_NAME} glfw glm Vulkan::Vulkan)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-  "${PROJECT_BINARY_DIR}/../src"
-  "${PROJECT_BINARY_DIR}/../src/"
-  "${PROJECT_BINARY_DIR}/../libs"
-  "${PROJECT_BINARY_DIR}/../libs/glfw/include")
+  "${CMAKE_CURRENT_BINARY_DIR}/../src"
+  "${CMAKE_CURRENT_BINARY_DIR}/../src/"
+  "${CMAKE_CURRENT_BINARY_DIR}/../libs"
+  "${CMAKE_CURRENT_BINARY_DIR}/../libs/glfw/include")
+
+
+function(compile_shaders)
+    message("-- Compiling shaders.")
+    
+    file(GLOB_RECURSE SHADERS_FRAG RELATIVE ${CMAKE_CURRENT_BINARY_DIR}/../assets/shaders/ assets/shaders/*.frag)
+    file(GLOB_RECURSE SHADERS_VERT RELATIVE ${CMAKE_CURRENT_BINARY_DIR}/../assets/shaders/ assets/shaders/*.vert )
+    file(MAKE_DIRECTORY assets/shaders)
+
+    foreach(SHADER_FRAG SHADER_VERT IN ZIP_LISTS SHADERS_FRAG SHADERS_VERT)
+        execute_process(COMMAND glslc ../assets/shaders/${SHADER_FRAG} -o assets/shaders/${SHADER_FRAG}.spv)
+        execute_process(COMMAND glslc ../assets/shaders/${SHADER_VERT} -o assets/shaders/${SHADER_VERT}.spv)
+    endforeach()
+endfunction()
+
+function(copy_textures)
+    message("-- Coping textures.")
+
+    file(GLOB_RECURSE TEXTURES RELATIVE ${CMAKE_CURRENT_BINARY_DIR}/../assets/textures/ assets/textures/*.*)
+    file(MAKE_DIRECTORY build/assets/textures)
+
+    foreach(TEXTURE ${TEXTURES})
+        file(COPY_FILE assets/textures/${TEXTURE} build/assets/textures/${TEXTURE})
+    endforeach()
+endfunction()
+
+if (CMPSDR)
+    compile_shaders()
+endif()
+
+if (CPTX)
+    copy_textures()
+endif()

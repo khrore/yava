@@ -38,6 +38,7 @@ class Vulkan
 	void createFramebuffer();
 	void createCommandPool();
 
+	void createTextureImage();
 	void createVertexBuffer();
 	void createIndexBuffer();
 	void createUniformBuffers();
@@ -121,8 +122,5 @@ class Vulkan
 	std::vector<VkBuffer>       uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
 	std::vector<void *>         uniformBuffersMapped;
-
-	float startTime = 0;
-    float rotate = 0;
 };
 }        // namespace App

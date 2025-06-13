@@ -15,9 +15,9 @@ namespace App
 {
 struct UniformBufferObject
 {
-	glm::mat4 model;
-	glm::mat4 view;
-	glm::mat4 proj;
+	alignas(16) glm::mat4 model;
+	alignas(16) glm::mat4 view;
+	alignas(16) glm::mat4 proj;
 };
 
 void Vulkan::createDescriptorSetLayout()
@@ -151,9 +151,6 @@ void Vulkan::createUniformBuffers()
 
 void Vulkan::updateUniformBuffer(uint32_t currentFrame)
 {
-	// float time = (float) glfwGetTime() - startTime;
-	// startTime  = (float) glfwGetTime();
-
 	static auto startTime =
 	    std::chrono::high_resolution_clock::now();
 	auto currentTime =
@@ -177,15 +174,6 @@ void Vulkan::updateUniformBuffer(uint32_t currentFrame)
 	    swapChainExtent.width / (float) swapChainExtent.height,
 	    0.1f,
 	    10.0f);
-
-	if (rotate <= 360.0f)
-	{
-		rotate += 10 * time;
-	}
-	else
-	{
-		rotate = 0;
-	}
 
 	// flip Y, because glm originaly designed for OpenGL
 	ubo.proj[1][1] *= -1;
