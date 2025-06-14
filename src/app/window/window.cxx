@@ -5,11 +5,12 @@
 
 namespace App
 {
-static void framebufferResizeCallback(GLFWwindow *window, int width, int height)
+static void framebufferResizeCallback(GLFWwindow *window,
+                                      int width, int height)
 {
-	auto app =
-	    reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
-    app->setIsFramebufferResized(true);
+	auto app = reinterpret_cast<Window *>(
+	    glfwGetWindowUserPointer(window));
+	app->setIsFramebufferResized(true);
 }
 
 Window::Window()
@@ -20,15 +21,13 @@ Window::Window()
 	// make window disable resize for quality of life
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	// create window
-	window = glfwCreateWindow(
-	    Settings::WINDOW_WIDTH,
-	    Settings::WINDOW_HEIGHT,
-	    "Vulkan",
-	    nullptr,
-	    nullptr);
-    
-    glfwSetWindowUserPointer(window, this);
-    glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+	window = glfwCreateWindow(Settings::WINDOW_WIDTH,
+	                          Settings::WINDOW_HEIGHT,
+	                          "Vulkan", nullptr, nullptr);
+
+	glfwSetWindowUserPointer(window, this);
+	glfwSetFramebufferSizeCallback(
+	    window, framebufferResizeCallback);
 }
 
 Window::~Window()

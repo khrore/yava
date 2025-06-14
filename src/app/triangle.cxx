@@ -3,10 +3,8 @@
 
 namespace App
 {
-Triangle::Triangle() :
-    vulkan(window)
-{
-}
+Triangle::Triangle() : vulkan(window)
+{}
 
 void Triangle::run()
 {

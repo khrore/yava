@@ -22,7 +22,7 @@ Vulkan::Vulkan(Window &window)
 	createFramebuffer();
 	createCommandPool();
 
-	// createTextureImage();
+	createTextureImage();
 	createVertexBuffer();
 	createIndexBuffer();
 	createUniformBuffers();

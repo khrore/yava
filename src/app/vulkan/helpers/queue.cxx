@@ -4,22 +4,22 @@
 
 namespace App
 {
-extern QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+extern QueueFamilyIndices
+    findQueueFamilies(VkPhysicalDevice physicalDevice,
+                      VkSurfaceKHR     surface)
 {
 	QueueFamilyIndices indices;
 
 	// enumerate queue family
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(
-	    physicalDevice,
-	    &queueFamilyCount,
-	    nullptr);
+	    physicalDevice, &queueFamilyCount, nullptr);
 
 	// store queue family
-	std::vector<VkQueueFamilyProperties> queueFamilis(queueFamilyCount);
+	std::vector<VkQueueFamilyProperties> queueFamilis(
+	    queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(
-	    physicalDevice,
-	    &queueFamilyCount,
+	    physicalDevice, &queueFamilyCount,
 	    queueFamilis.data());
 
 	int32_t queueFamilyIndex = 0;
@@ -27,9 +27,7 @@ extern QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkS
 	{
 		VkBool32 isPresentSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(
-		    physicalDevice,
-		    queueFamilyIndex,
-		    surface,
+		    physicalDevice, queueFamilyIndex, surface,
 		    &isPresentSupport);
 
 		if (isPresentSupport)

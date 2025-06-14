@@ -12,11 +12,12 @@ struct QueueFamilyIndices
 
 	bool isComplite()
 	{
-		return graphicsFamily.has_value() && presentFamily.has_value();
+		return graphicsFamily.has_value() &&
+		       presentFamily.has_value();
 	}
 };
 
-extern QueueFamilyIndices findQueueFamilies(
-    VkPhysicalDevice physicalDevice,
-    VkSurfaceKHR     surface);
+extern QueueFamilyIndices
+    findQueueFamilies(VkPhysicalDevice physicalDevice,
+                      VkSurfaceKHR     surface);
 }        // namespace App

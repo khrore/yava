@@ -1,7 +1,8 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/settings/validation.hxx"
 #include "app/vulkan/helpers/debug.hxx"
+#include "app/vulkan/settings/validation.hxx"
+
 
 namespace App
 {
@@ -13,10 +14,12 @@ void Vulkan::setupDebugMessenger()
 	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 	populateDebugUtilsMessengerCreateInfoEXT(createInfo);
 
-	if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr,
-	                                 &debugMessenger) != VK_SUCCESS)
+	if (CreateDebugUtilsMessengerEXT(
+	        instance, &createInfo, nullptr,
+	        &debugMessenger) != VK_SUCCESS)
 	{
-		throw std::runtime_error("failed to set up debug messenger!");
+		throw std::runtime_error(
+		    "failed to set up debug messenger!");
 	}
 }
 
@@ -26,7 +29,9 @@ void DestroyDebugUtilsMessengerEXT(
     const VkAllocationCallbacks *pAllocator)
 {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)
-	    vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	    vkGetInstanceProcAddr(instance,
+	                          "vkDestroyDebugUtilsMes"
+	                          "sengerEXT");
 	if (func != nullptr)
 	{
 		func(instance, debugMessenger, pAllocator);
@@ -37,7 +42,8 @@ void Vulkan::destroyDebugMessager()
 {
 	if (Settings::isEnableValidationLayers)
 	{
-		DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+		DestroyDebugUtilsMessengerEXT(
+		    instance, debugMessenger, nullptr);
 	}
 }
 }        // namespace App

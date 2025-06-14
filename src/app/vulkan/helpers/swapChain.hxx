@@ -15,15 +15,17 @@ struct SwapChainSupportDetails
 	std::vector<VkPresentModeKHR>   presentModes;
 };
 
-extern SwapChainSupportDetails querySwapChainSupport(
-    VkPhysicalDevice physicalDevice,
-    VkSurfaceKHR     surface);
+extern SwapChainSupportDetails
+    querySwapChainSupport(VkPhysicalDevice physicalDevice,
+                          VkSurfaceKHR     surface);
 
 extern VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-    const std::vector<VkSurfaceFormatKHR> &avaliableFormats);
+    const std::vector<VkSurfaceFormatKHR>
+        &avaliableFormats);
 
 extern VkPresentModeKHR chooseSwapPresentMode(
-    const std::vector<VkPresentModeKHR> &avaliablePresentModes);
+    const std::vector<VkPresentModeKHR>
+        &avaliablePresentModes);
 
 extern VkExtent2D chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR &capabilities,

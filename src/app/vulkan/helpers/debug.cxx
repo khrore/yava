@@ -2,7 +2,8 @@
 
 namespace App
 {
-extern void populateDebugUtilsMessengerCreateInfoEXT(VkDebugUtilsMessengerCreateInfoEXT &createInfo)
+extern void populateDebugUtilsMessengerCreateInfoEXT(
+    VkDebugUtilsMessengerCreateInfoEXT &createInfo)
 {
 	createInfo.sType =
 	    VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -22,15 +23,15 @@ extern VkResult CreateDebugUtilsMessengerEXT(
     VkInstance                                instance,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks              *pAllocator,
-    VkDebugUtilsMessengerEXT                 *pDebugMessenger)
+    VkDebugUtilsMessengerEXT *pDebugMessenger)
 {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)
 	    vkGetInstanceProcAddr(
-	        instance,
-	        "vkCreateDebugUtilsMessengerEXT");
+	        instance, "vkCreateDebugUtilsMessengerEXT");
 	if (func != nullptr)
 	{
-		return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+		return func(instance, pCreateInfo, pAllocator,
+		            pDebugMessenger);
 	}
 	else
 	{

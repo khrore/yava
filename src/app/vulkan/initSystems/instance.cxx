@@ -1,25 +1,31 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/settings/validation.hxx"
 #include "app/vulkan/helpers/debug.hxx"
+#include "app/vulkan/settings/validation.hxx"
+
 
 namespace App
 {
 bool checkValidationLayerSupport()
 {
 	uint32_t layerCount;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+	vkEnumerateInstanceLayerProperties(&layerCount,
+	                                   nullptr);
 
-	std::vector<VkLayerProperties> avaliableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, avaliableLayers.data());
+	std::vector<VkLayerProperties> avaliableLayers(
+	    layerCount);
+	vkEnumerateInstanceLayerProperties(
+	    &layerCount, avaliableLayers.data());
 
-	for (const char *layerName : Settings::enabledValidationLayers)
+	for (const char *layerName :
+	     Settings::enabledValidationLayers)
 	{
 		bool layerFound = false;
 
 		for (const auto &layerProperties : avaliableLayers)
 		{
-			if (strcmp(layerName, layerProperties.layerName))
+			if (strcmp(layerName,
+			           layerProperties.layerName))
 			{
 				layerFound = true;
 				break;
@@ -38,7 +44,9 @@ bool checkValidationLayerSupport()
 std::vector<const char *> getRequiredGLFWextensions()
 {
 	uint32_t     glfwExtensionCount = 0;
-	const char **glfwExtensions     = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+	const char **glfwExtensions =
+	    glfwGetRequiredInstanceExtensions(
+	        &glfwExtensionCount);
 
 	std::vector<const char *> extensions(
 	    glfwExtensions,
@@ -46,7 +54,8 @@ std::vector<const char *> getRequiredGLFWextensions()
 
 	if (Settings::isEnableValidationLayers)
 	{
-		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		extensions.push_back(
+		    VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 	}
 
 	return extensions;
@@ -54,15 +63,18 @@ std::vector<const char *> getRequiredGLFWextensions()
 
 void Vulkan::initInstance()
 {
-	if (Settings::isEnableValidationLayers && !checkValidationLayerSupport())
+	if (Settings::isEnableValidationLayers &&
+	    !checkValidationLayerSupport())
 	{
-		throw std::runtime_error("validation layers requested, but not avaliable!");
+		throw std::runtime_error(
+		    "validation layers requested, but "
+		    "not avaliable!");
 	}
 
 	// creating app info
 
 	VkApplicationInfo appInfo{};
-	appInfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName   = "HelloTriangle";
 	appInfo.applicationVersion = VK_MAKE_VERSION(0, 1, 0);
 	appInfo.pEngineName        = "No Engine";
@@ -70,12 +82,15 @@ void Vulkan::initInstance()
 	appInfo.apiVersion         = VK_API_VERSION_1_0;
 
 	VkInstanceCreateInfo createInfo{};
-	createInfo.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	createInfo.sType =
+	    VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 
-	auto glfwExtensions                = getRequiredGLFWextensions();
-	createInfo.enabledExtensionCount   = static_cast<uint32_t>(glfwExtensions.size());
-	createInfo.ppEnabledExtensionNames = glfwExtensions.data();
+	auto glfwExtensions = getRequiredGLFWextensions();
+	createInfo.enabledExtensionCount =
+	    static_cast<uint32_t>(glfwExtensions.size());
+	createInfo.ppEnabledExtensionNames =
+	    glfwExtensions.data();
 
 	// debug stuff
 
@@ -83,10 +98,15 @@ void Vulkan::initInstance()
 	if (Settings::isEnableValidationLayers)
 	{
 		createInfo.enabledLayerCount =
-		    static_cast<uint32_t>(Settings::enabledValidationLayers.size());
-		createInfo.ppEnabledLayerNames = Settings::enabledValidationLayers.data();
-		populateDebugUtilsMessengerCreateInfoEXT(debugCreateInfo);
-		createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *) &debugCreateInfo;
+		    static_cast<uint32_t>(
+		        Settings::enabledValidationLayers.size());
+		createInfo.ppEnabledLayerNames =
+		    Settings::enabledValidationLayers.data();
+		populateDebugUtilsMessengerCreateInfoEXT(
+		    debugCreateInfo);
+		createInfo.pNext =
+		    (VkDebugUtilsMessengerCreateInfoEXT
+		         *) &debugCreateInfo;
 	}
 	else
 	{
@@ -96,31 +116,28 @@ void Vulkan::initInstance()
 
 	// creating instance
 
-	if (vkCreateInstance(
-	        &createInfo,
-	        nullptr,
-	        &instance) != VK_SUCCESS)
+	if (vkCreateInstance(&createInfo, nullptr, &instance) !=
+	    VK_SUCCESS)
 	{
-		throw std::runtime_error("failed to create instance");
+		throw std::runtime_error(
+		    "failed to create instance");
 	}
 
 	// debug extension
 
 	uint32_t vkExtensionCount = 0;
 	vkEnumerateInstanceExtensionProperties(
-	    nullptr,
-	    &vkExtensionCount,
-	    nullptr);
-	std::vector<VkExtensionProperties> vkExtensions(vkExtensionCount);
+	    nullptr, &vkExtensionCount, nullptr);
+	std::vector<VkExtensionProperties> vkExtensions(
+	    vkExtensionCount);
 	vkEnumerateInstanceExtensionProperties(
-	    nullptr,
-	    &vkExtensionCount,
-	    vkExtensions.data());
+	    nullptr, &vkExtensionCount, vkExtensions.data());
 
 	std::cout << "Available extensions:" << std::endl;
 	for (const auto &vkExtension : vkExtensions)
 	{
-		std::cout << "   a " << vkExtension.extensionName << std::endl;
+		std::cout << "   a " << vkExtension.extensionName
+		          << std::endl;
 	}
 }
 

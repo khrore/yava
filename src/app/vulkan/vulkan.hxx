@@ -7,9 +7,6 @@
 #include "helpers/vertex.hxx"
 
 #include <cstdint>
-#include <iostream>
-#include <stdexcept>
-#include <string>
 #include <vector>
 
 namespace App

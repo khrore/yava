@@ -1,5 +1,7 @@
 #include "app/triangle.hxx"
 
+#include <iostream>
+
 int main()
 {
 	App::Triangle app;
