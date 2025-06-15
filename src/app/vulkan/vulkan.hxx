@@ -45,6 +45,7 @@ class Vulkan
 	void createCommandBuffer();
 	void createSyncObjects();
 
+
 	void destroyUniformBuffers();
 	void destroyIndexBuffer();
 	void destroyVertexBuffer();
@@ -64,7 +65,9 @@ class Vulkan
 	void destroySurface();
 	void destroyInstance();
 
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+	void recordCommandBuffer(VkCommandBuffer commandBuffer,
+	                         uint32_t        imageIndex);
 	void updateUniformBuffer(uint32_t currentFrame);
 
 	void recreateSwapChain();
@@ -111,13 +114,16 @@ class Vulkan
 	VkBuffer       vertexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 
-	const std::vector<uint16_t> indices = {
-	    0, 1, 2, 2, 3, 0};
-	VkBuffer       indexBuffer;
-	VkDeviceMemory indexBufferMemory;
+	const std::vector<uint16_t> indices = {0, 1, 2,
+	                                       2, 3, 0};
+	VkBuffer                    indexBuffer;
+	VkDeviceMemory              indexBufferMemory;
 
 	std::vector<VkBuffer>       uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
 	std::vector<void *>         uniformBuffersMapped;
+
+	VkImage        textureImage;
+	VkDeviceMemory textureImageMemory;
 };
 }        // namespace App

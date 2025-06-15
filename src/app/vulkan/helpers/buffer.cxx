@@ -5,9 +5,10 @@
 namespace App
 {
 
-uint32_t findPhysicalDeviceMemoryType(
-    VkPhysicalDevice physicalDevice, uint32_t typeFilter,
-    VkMemoryPropertyFlags properties)
+extern uint32_t
+    findMemoryType(VkPhysicalDevice      physicalDevice,
+                   uint32_t              typeFilter,
+                   VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
 	vkGetPhysicalDeviceMemoryProperties(physicalDevice,
@@ -28,13 +29,13 @@ uint32_t findPhysicalDeviceMemoryType(
 	    "failed to find suitable memory type!");
 }
 
-void createBuffer(VkDevice              device,
-                  VkPhysicalDevice      physicalDevice,
-                  VkDeviceSize          size,
-                  VkBufferUsageFlags    usage,
-                  VkMemoryPropertyFlags properties,
-                  VkBuffer             &buffer,
-                  VkDeviceMemory       &bufferMemory)
+extern void createBuffer(VkDevice           device,
+                         VkPhysicalDevice   physicalDevice,
+                         VkDeviceSize       size,
+                         VkBufferUsageFlags usage,
+                         VkMemoryPropertyFlags properties,
+                         VkBuffer             &buffer,
+                         VkDeviceMemory       &bufferMemory)
 {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -56,12 +57,11 @@ void createBuffer(VkDevice              device,
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType =
 	    VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex =
-	    findPhysicalDeviceMemoryType(
-	        physicalDevice, memRequirements.memoryTypeBits,
-	        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-	            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	allocInfo.allocationSize  = memRequirements.size;
+	allocInfo.memoryTypeIndex = findMemoryType(
+	    physicalDevice, memRequirements.memoryTypeBits,
+	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
 	if (vkAllocateMemory(device, &allocInfo, nullptr,
 	                     &bufferMemory) != VK_SUCCESS)

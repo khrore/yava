@@ -1,5 +1,7 @@
-#include "app/vulkan/helpers/buffer.hxx"
 #include "app/vulkan/vulkan.hxx"
+
+#include "app/vulkan/helpers/buffer.hxx"
+
 #include <cstddef>
 #include <cstring>
 
