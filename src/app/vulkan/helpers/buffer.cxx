@@ -4,11 +4,9 @@
 
 namespace App
 {
-
-extern uint32_t
-    findMemoryType(VkPhysicalDevice      physicalDevice,
-                   uint32_t              typeFilter,
-                   VkMemoryPropertyFlags properties)
+uint32_t findMemoryType(VkPhysicalDevice physicalDevice,
+                        uint32_t         typeFilter,
+                        VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
 	vkGetPhysicalDeviceMemoryProperties(physicalDevice,
@@ -29,13 +27,13 @@ extern uint32_t
 	    "failed to find suitable memory type!");
 }
 
-extern void createBuffer(VkDevice           device,
-                         VkPhysicalDevice   physicalDevice,
-                         VkDeviceSize       size,
-                         VkBufferUsageFlags usage,
-                         VkMemoryPropertyFlags properties,
-                         VkBuffer             &buffer,
-                         VkDeviceMemory       &bufferMemory)
+void createBuffer(VkDevice              device,
+                  VkPhysicalDevice      physicalDevice,
+                  VkDeviceSize          size,
+                  VkBufferUsageFlags    usage,
+                  VkMemoryPropertyFlags properties,
+                  VkBuffer             &buffer,
+                  VkDeviceMemory       &bufferMemory)
 {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -73,10 +71,9 @@ extern void createBuffer(VkDevice           device,
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
-extern void
-    copyBuffer(VkDevice device, VkCommandPool commandPool,
-               VkQueue graphicQueue, VkBuffer srcBuffer,
-               VkBuffer dstBuffer, VkDeviceSize size)
+VkCommandBuffer
+    beginSingleTimeCommands(VkDevice      device,
+                            VkCommandPool commandPool)
 {
 	// create command buffer
 	VkCommandBufferAllocateInfo allocInfo{};
@@ -99,14 +96,14 @@ extern void
 
 	vkBeginCommandBuffer(commandBuffer, &beginInfo);
 
-	// transferring contents of buffers
-	VkBufferCopy copyRegion{};
-	copyRegion.srcOffset = 0;        // optional
-	copyRegion.dstOffset = 0;        // optional
-	copyRegion.size      = size;
-	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1,
-	                &copyRegion);
+	return commandBuffer;
+}
 
+void endSingleTimeCommands(VkDevice        device,
+                           VkCommandBuffer commandBuffer,
+                           VkCommandPool   commandPool,
+                           VkQueue         graphicQueue)
+{
 	// only containing the copy command
 	vkEndCommandBuffer(commandBuffer);
 
@@ -121,5 +118,90 @@ extern void
 
 	vkFreeCommandBuffers(device, commandPool, 1,
 	                     &commandBuffer);
+}
+
+void copyBuffer(VkDevice device, VkCommandPool commandPool,
+                VkQueue graphicQueue, VkBuffer srcBuffer,
+                VkBuffer dstBuffer, VkDeviceSize size)
+{
+	VkCommandBuffer commandBuffer =
+	    beginSingleTimeCommands(device, commandPool);
+
+	// transferring contents of buffers
+	VkBufferCopy copyRegion{};
+	copyRegion.srcOffset = 0;        // optional
+	copyRegion.dstOffset = 0;        // optional
+	copyRegion.size      = size;
+	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1,
+	                &copyRegion);
+
+	endSingleTimeCommands(device, commandBuffer,
+	                      commandPool, graphicQueue);
+}
+
+void translationImageLayout(VkDevice      device,
+                            VkCommandPool commandPool,
+                            VkQueue       graphicQueue,
+                            VkImage image, VkFormat format,
+                            VkImageLayout oldLayout,
+                            VkImageLayout newLayout)
+{
+	VkCommandBuffer commandBuffer =
+	    beginSingleTimeCommands(device, commandPool);
+
+	VkImageMemoryBarrier barrier{};
+	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+	barrier.oldLayout           = oldLayout;
+	barrier.newLayout           = newLayout;
+	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.image               = image;
+
+	barrier.subresourceRange.aspectMask =
+	    VK_IMAGE_ASPECT_COLOR_BIT;
+	barrier.subresourceRange.baseMipLevel   = 0;
+	barrier.subresourceRange.levelCount     = 1;
+	barrier.subresourceRange.baseArrayLayer = 0;
+	barrier.subresourceRange.levelCount     = 1;
+	barrier.srcAccessMask = 0;        // TODO
+	barrier.dstAccessMask = 0;        // TODO
+
+	vkCmdPipelineBarrier(commandBuffer, 0 /* TODO */,
+	                     0 /*TODO*/, 0, 0, nullptr, 0,
+	                     nullptr, 1, &barrier);
+
+	endSingleTimeCommands(device, commandBuffer,
+	                      commandPool, graphicQueue);
+}
+
+void copyBufferToImage(VkDevice      device,
+                       VkCommandPool commandPool,
+                       VkQueue       graphicQueue,
+                       VkBuffer buffer, VkImage image,
+                       uint32_t width, uint32_t height)
+{
+	VkCommandBuffer commandBuffer =
+	    beginSingleTimeCommands(device, commandPool);
+
+	VkBufferImageCopy region{};
+	region.bufferOffset      = 0;
+	region.bufferRowLength   = 0;
+	region.bufferImageHeight = 0;
+
+	region.imageSubresource.aspectMask =
+	    VK_IMAGE_ASPECT_COLOR_BIT;
+	region.imageSubresource.mipLevel       = 0;
+	region.imageSubresource.baseArrayLayer = 0;
+	region.imageSubresource.layerCount     = 1;
+
+	region.imageOffset = {0, 0, 0};
+	region.imageExtent = {width, height, 1};
+
+	vkCmdCopyBufferToImage(
+	    commandBuffer, buffer, image,
+	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+	endSingleTimeCommands(device, commandBuffer,
+	                      commandPool, graphicQueue);
 }
 }        // namespace App

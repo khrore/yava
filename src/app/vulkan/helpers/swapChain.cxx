@@ -6,7 +6,7 @@
 
 namespace App
 {
-extern SwapChainSupportDetails
+SwapChainSupportDetails
     querySwapChainSupport(VkPhysicalDevice physicalDevice,
                           VkSurfaceKHR     surface)
 {
@@ -43,9 +43,9 @@ extern SwapChainSupportDetails
 	return details;
 }
 
-// TODO: learn surafece formats
+// TODO: learn surface formats
 // choose best format instade of first
-extern VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+VkSurfaceFormatKHR chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR> &avaliableFormats)
 {
 	for (const auto &avaliableFormat : avaliableFormats)

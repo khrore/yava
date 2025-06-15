@@ -2,7 +2,7 @@
 
 namespace App
 {
-extern void populateDebugUtilsMessengerCreateInfoEXT(
+void populateDebugUtilsMessengerCreateInfoEXT(
     VkDebugUtilsMessengerCreateInfoEXT &createInfo)
 {
 	createInfo.sType =
@@ -19,7 +19,7 @@ extern void populateDebugUtilsMessengerCreateInfoEXT(
 	createInfo.pUserData       = nullptr;
 }
 
-extern VkResult CreateDebugUtilsMessengerEXT(
+VkResult CreateDebugUtilsMessengerEXT(
     VkInstance                                instance,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks              *pAllocator,

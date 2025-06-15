@@ -4,7 +4,7 @@
 
 namespace App
 {
-extern QueueFamilyIndices
+QueueFamilyIndices
     findQueueFamilies(VkPhysicalDevice physicalDevice,
                       VkSurfaceKHR     surface)
 {
