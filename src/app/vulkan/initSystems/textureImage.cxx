@@ -3,7 +3,6 @@
 #include "app/vulkan/helpers/buffer.hxx"
 #include "app/vulkan/helpers/image.hxx"
 
-
 #include <stdexcept>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -40,13 +39,36 @@ void Vulkan::createTextureImage()
 	vkUnmapMemory(device, stagingBufferMemory);
 	stbi_image_free(pixels);
 
-	createImage(device, physicalDevice, textureImageMemory,
-	            textureImage, texWidth, texHeight,
+	createImage(device, physicalDevice, texWidth, texHeight,
 	            VK_FORMAT_R8G8B8A8_SRGB,
 	            VK_IMAGE_TILING_OPTIMAL,
 	            VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 	                VK_IMAGE_USAGE_SAMPLED_BIT,
 	            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 	            textureImage, textureImageMemory);
+
+	translationImageLayout(
+	    device, commandPool, graphicQueue, textureImage,
+	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
+	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	copyBufferToImage(device, commandPool, graphicQueue,
+	                  stagingBuffer, textureImage,
+	                  static_cast<uint32_t>(texWidth),
+	                  static_cast<uint32_t>(texHeight));
+
+	translationImageLayout(
+	    device, commandPool, graphicQueue, textureImage,
+	    VK_FORMAT_R8G8B8A8_SRGB,
+	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+	    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+	vkDestroyBuffer(device, stagingBuffer, nullptr);
+	vkFreeMemory(device, stagingBufferMemory, nullptr);
+}
+
+void Vulkan::destroyTextureImage()
+{
+	vkDestroyImage(device, textureImage, nullptr);
+	vkFreeMemory(device, textureImageMemory, nullptr);
 }
 }        // namespace App

@@ -49,6 +49,7 @@ class Vulkan
 	void destroyUniformBuffers();
 	void destroyIndexBuffer();
 	void destroyVertexBuffer();
+	void destroyTextureImage();
 
 	void destroySyncObjects();
 	void destroyDescriptorPool();

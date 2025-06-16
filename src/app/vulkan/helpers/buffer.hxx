@@ -33,4 +33,10 @@ extern void translationImageLayout(
     VkDevice device, VkCommandPool commandPool,
     VkQueue graphicQueue, VkImage image, VkFormat format,
     VkImageLayout oldLayout, VkImageLayout newLayout);
+
+extern void copyBufferToImage(VkDevice      device,
+                       VkCommandPool commandPool,
+                       VkQueue       graphicQueue,
+                       VkBuffer buffer, VkImage image,
+                       uint32_t width, uint32_t height);
 }        // namespace App

@@ -45,6 +45,7 @@ Vulkan::~Vulkan()
 	destroyUniformBuffers();
 	destroyIndexBuffer();
 	destroyVertexBuffer();
+	destroyTextureImage();
 
 	destroyGraphicsPipline();
 	destroyRenderPass();
