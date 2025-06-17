@@ -23,6 +23,9 @@ Vulkan::Vulkan(Window &window)
 	createCommandPool();
 
 	createTextureImage();
+	createTextureImageView();
+	createTextureSampler();
+
 	createVertexBuffer();
 	createIndexBuffer();
 	createUniformBuffers();
@@ -45,6 +48,9 @@ Vulkan::~Vulkan()
 	destroyUniformBuffers();
 	destroyIndexBuffer();
 	destroyVertexBuffer();
+
+	createTextureSampler();
+	createTextureImageView();
 	destroyTextureImage();
 
 	destroyGraphicsPipline();

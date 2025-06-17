@@ -1,7 +1,9 @@
 #include "app/vulkan/vulkan.hxx"
 
+#include "app/vulkan/helpers/image.hxx"
 #include "app/vulkan/helpers/queue.hxx"
 #include "app/vulkan/helpers/swapChain.hxx"
+
 
 #include <cstddef>
 
@@ -115,5 +117,24 @@ void Vulkan::recreateSwapChain()
 void Vulkan::destroySwapChain()
 {
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
+}
+
+void Vulkan::createImageViews()
+{
+	swapChainImageViews.resize(swapChainImages.size());
+	for (size_t i = 0; i < swapChainImages.size(); i++)
+	{
+		swapChainImageViews[i] =
+		    createImageView(device, swapChainImages[i],
+		                    swapChainImageFormat);
+	}
+}
+
+void Vulkan::destoryImageViews()
+{
+	for (auto imageView : swapChainImageViews)
+	{
+		vkDestroyImageView(device, imageView, nullptr);
+	}
 }
 }        // namespace App

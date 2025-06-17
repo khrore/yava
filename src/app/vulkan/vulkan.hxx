@@ -36,6 +36,9 @@ class Vulkan
 	void createCommandPool();
 
 	void createTextureImage();
+	void createTextureImageView();
+	void createTextureSampler();
+
 	void createVertexBuffer();
 	void createIndexBuffer();
 	void createUniformBuffers();
@@ -49,6 +52,9 @@ class Vulkan
 	void destroyUniformBuffers();
 	void destroyIndexBuffer();
 	void destroyVertexBuffer();
+
+	void destroyTextureSampler();
+	void destroyTextureImageView();
 	void destroyTextureImage();
 
 	void destroySyncObjects();
@@ -126,5 +132,7 @@ class Vulkan
 
 	VkImage        textureImage;
 	VkDeviceMemory textureImageMemory;
+	VkImageView    textureImageView;
+	VkSampler      textureSampler;
 };
 }        // namespace App
