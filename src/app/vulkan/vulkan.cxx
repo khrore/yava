@@ -49,8 +49,8 @@ Vulkan::~Vulkan()
 	destroyIndexBuffer();
 	destroyVertexBuffer();
 
-	createTextureSampler();
-	createTextureImageView();
+	destroyTextureSampler();
+	destroyTextureImageView();
 	destroyTextureImage();
 
 	destroyGraphicsPipline();

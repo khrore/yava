@@ -53,8 +53,13 @@ bool isDeviceSuitable(VkPhysicalDevice physicalDevice,
 		    !swapChainSupport.presentModes.empty();
 	}
 
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(physicalDevice,
+	                            &supportedFeatures);
+
 	return indices.isComplite() && isExtensionSupported &&
-	       isSwapChainAdequate;
+	       isSwapChainAdequate &&
+	       supportedFeatures.samplerAnisotropy;
 }
 
 void Vulkan::createLogicalDevice()
@@ -80,6 +85,7 @@ void Vulkan::createLogicalDevice()
 	}
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
