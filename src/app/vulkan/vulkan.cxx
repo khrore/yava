@@ -28,7 +28,7 @@ Vulkan::Vulkan(Window &window)
 
 	createVertexBuffer();
 	createIndexBuffer();
-	createUniformBuffers();
+	createModelViewProjectionMatrix();
 
 	createDescriptorPool();
 	createDescriptorSets();
@@ -45,7 +45,7 @@ Vulkan::~Vulkan()
 	destroySyncObjects();
 	destroyCommandPool();
 
-	destroyUniformBuffers();
+	destroyModelViewProjectionMatrix();
 	destroyIndexBuffer();
 	destroyVertexBuffer();
 

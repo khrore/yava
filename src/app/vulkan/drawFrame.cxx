@@ -39,7 +39,7 @@ void Vulkan::drawFrame()
 	recordCommandBuffer(
 	    commandBuffers[currentFrame], imageIndex);
 
-	updateUniformBuffer(currentFrame);
+	updateModelViewProjectionMatrix(currentFrame);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType =

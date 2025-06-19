@@ -41,7 +41,7 @@ class Vulkan
 
 	void createVertexBuffer();
 	void createIndexBuffer();
-	void createUniformBuffers();
+	void createModelViewProjectionMatrix();
 
 	void createDescriptorPool();
 	void createDescriptorSets();
@@ -49,7 +49,7 @@ class Vulkan
 	void createSyncObjects();
 
 
-	void destroyUniformBuffers();
+	void destroyModelViewProjectionMatrix();
 	void destroyIndexBuffer();
 	void destroyVertexBuffer();
 
@@ -75,7 +75,8 @@ class Vulkan
 
 	void recordCommandBuffer(VkCommandBuffer commandBuffer,
 	                         uint32_t        imageIndex);
-	void updateUniformBuffer(uint32_t currentFrame);
+	void updateModelViewProjectionMatrix(
+	    uint32_t currentFrame);
 
 	void recreateSwapChain();
 	void cleanupSwapChain();
@@ -126,9 +127,9 @@ class Vulkan
 	VkBuffer                    indexBuffer;
 	VkDeviceMemory              indexBufferMemory;
 
-	std::vector<VkBuffer>       uniformBuffers;
-	std::vector<VkDeviceMemory> uniformBuffersMemory;
-	std::vector<void *>         uniformBuffersMapped;
+	std::vector<VkBuffer>       mvpBuffers;
+	std::vector<VkDeviceMemory> mvpBuffersMemory;
+	std::vector<void *>         mvpBuffersMapped;
 
 	VkImage        textureImage;
 	VkDeviceMemory textureImageMemory;
