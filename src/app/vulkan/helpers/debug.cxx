@@ -20,18 +20,17 @@ void populateDebugUtilsMessengerCreateInfoEXT(
 }
 
 VkResult CreateDebugUtilsMessengerEXT(
-    VkInstance                                instance,
+    AppVkEnviroment                          &env,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
-    const VkAllocationCallbacks              *pAllocator,
-    VkDebugUtilsMessengerEXT *pDebugMessenger)
+    const VkAllocationCallbacks              *pAllocator)
 {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)
 	    vkGetInstanceProcAddr(
-	        instance, "vkCreateDebugUtilsMessengerEXT");
+	        env.instance, "vkCreateDebugUtilsMessengerEXT");
 	if (func != nullptr)
 	{
-		return func(instance, pCreateInfo, pAllocator,
-		            pDebugMessenger);
+		return func(env.instance, pCreateInfo, pAllocator,
+		            &env.debugMessenger);
 	}
 	else
 	{

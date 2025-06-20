@@ -5,10 +5,10 @@
 
 namespace App
 {
-class Triangle
+class App
 {
   public:
-	Triangle();
+	App();
 
 	void run();
 

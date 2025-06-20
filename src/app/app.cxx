@@ -1,17 +1,17 @@
-#include "triangle.hxx"
+#include "app.hxx"
 #include "app/window/window.hxx"
 
 namespace App
 {
-Triangle::Triangle() : vulkan(window)
+App::App() : vulkan(window)
 {}
 
-void Triangle::run()
+void App::run()
 {
 	mainLoop();
 }
 
-void Triangle::mainLoop()
+void App::mainLoop()
 {
 	while (!glfwWindowShouldClose(&window.get()))
 	{

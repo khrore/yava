@@ -1,10 +1,10 @@
-#include "app/triangle.hxx"
+#include "app/app.hxx"
 
 #include <iostream>
 
 int main()
 {
-	App::Triangle app;
+	App::App app;
 	try
 	{
 		app.run();

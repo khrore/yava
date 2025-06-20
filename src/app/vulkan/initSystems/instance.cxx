@@ -116,7 +116,7 @@ void Vulkan::initInstance()
 
 	// creating instance
 
-	if (vkCreateInstance(&createInfo, nullptr, &instance) !=
+	if (vkCreateInstance(&createInfo, nullptr, &env.instance) !=
 	    VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -143,6 +143,6 @@ void Vulkan::initInstance()
 
 void Vulkan::destroyInstance()
 {
-	vkDestroyInstance(instance, nullptr);
+	vkDestroyInstance(env.instance, nullptr);
 }
 }        // namespace App

@@ -4,12 +4,12 @@
 
 namespace App
 {
-uint32_t findMemoryType(VkPhysicalDevice physicalDevice,
-                        uint32_t         typeFilter,
+uint32_t findMemoryType(AppVkEnviroment      &env,
+                        uint32_t              typeFilter,
                         VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
-	vkGetPhysicalDeviceMemoryProperties(physicalDevice,
+	vkGetPhysicalDeviceMemoryProperties(env.physicalDevice,
 	                                    &memProperties);
 
 	for (uint32_t i = 0; i < memProperties.memoryTypeCount;
@@ -27,9 +27,7 @@ uint32_t findMemoryType(VkPhysicalDevice physicalDevice,
 	    "failed to find suitable memory type!");
 }
 
-void createBuffer(VkDevice              device,
-                  VkPhysicalDevice      physicalDevice,
-                  VkDeviceSize          size,
+void createBuffer(AppVkEnviroment &env, VkDeviceSize size,
                   VkBufferUsageFlags    usage,
                   VkMemoryPropertyFlags properties,
                   VkBuffer             &buffer,
@@ -41,7 +39,7 @@ void createBuffer(VkDevice              device,
 	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateBuffer(device, &bufferInfo, nullptr,
+	if (vkCreateBuffer(env.device, &bufferInfo, nullptr,
 	                   &buffer) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -49,7 +47,7 @@ void createBuffer(VkDevice              device,
 	}
 
 	VkMemoryRequirements memRequirements;
-	vkGetBufferMemoryRequirements(device, buffer,
+	vkGetBufferMemoryRequirements(env.device, buffer,
 	                              &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{};
@@ -57,23 +55,23 @@ void createBuffer(VkDevice              device,
 	    VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize  = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(
-	    physicalDevice, memRequirements.memoryTypeBits,
+	    env, memRequirements.memoryTypeBits,
 	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-	if (vkAllocateMemory(device, &allocInfo, nullptr,
+	if (vkAllocateMemory(env.device, &allocInfo, nullptr,
 	                     &bufferMemory) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to allocate buffer memory!");
 	}
 
-	vkBindBufferMemory(device, buffer, bufferMemory, 0);
+	vkBindBufferMemory(env.device, buffer, bufferMemory, 0);
 }
 
 VkCommandBuffer
-    beginSingleTimeCommands(VkDevice      device,
-                            VkCommandPool commandPool)
+    beginSingleTimeCommands(AppVkEnviroment &env,
+                            VkCommandPool    commandPool)
 {
 	// create command buffer
 	VkCommandBufferAllocateInfo allocInfo{};
@@ -84,7 +82,7 @@ VkCommandBuffer
 	allocInfo.commandBufferCount = 1;
 
 	VkCommandBuffer commandBuffer;
-	vkAllocateCommandBuffers(device, &allocInfo,
+	vkAllocateCommandBuffers(env.device, &allocInfo,
 	                         &commandBuffer);
 
 	// record command buffer
@@ -99,10 +97,10 @@ VkCommandBuffer
 	return commandBuffer;
 }
 
-void endSingleTimeCommands(VkDevice        device,
-                           VkCommandBuffer commandBuffer,
-                           VkCommandPool   commandPool,
-                           VkQueue         graphicQueue)
+void endSingleTimeCommands(AppVkEnviroment &env,
+                           VkCommandBuffer  commandBuffer,
+                           VkCommandPool    commandPool,
+                           VkQueue          graphicQueue)
 {
 	// only containing the copy command
 	vkEndCommandBuffer(commandBuffer);
@@ -116,16 +114,17 @@ void endSingleTimeCommands(VkDevice        device,
 	              VK_NULL_HANDLE);
 	vkQueueWaitIdle(graphicQueue);
 
-	vkFreeCommandBuffers(device, commandPool, 1,
+	vkFreeCommandBuffers(env.device, commandPool, 1,
 	                     &commandBuffer);
 }
 
-void copyBuffer(VkDevice device, VkCommandPool commandPool,
+void copyBuffer(AppVkEnviroment &env,
+                VkCommandPool    commandPool,
                 VkQueue graphicQueue, VkBuffer srcBuffer,
                 VkBuffer dstBuffer, VkDeviceSize size)
 {
 	VkCommandBuffer commandBuffer =
-	    beginSingleTimeCommands(device, commandPool);
+	    beginSingleTimeCommands(env, commandPool);
 
 	// transferring contents of buffers
 	VkBufferCopy copyRegion{};
@@ -135,19 +134,19 @@ void copyBuffer(VkDevice device, VkCommandPool commandPool,
 	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1,
 	                &copyRegion);
 
-	endSingleTimeCommands(device, commandBuffer,
-	                      commandPool, graphicQueue);
+	endSingleTimeCommands(env, commandBuffer, commandPool,
+	                      graphicQueue);
 }
 
-void translationImageLayout(VkDevice      device,
-                            VkCommandPool commandPool,
-                            VkQueue       graphicQueue,
+void translationImageLayout(AppVkEnviroment &env,
+                            VkCommandPool    commandPool,
+                            VkQueue          graphicQueue,
                             VkImage image, VkFormat format,
                             VkImageLayout oldLayout,
                             VkImageLayout newLayout)
 {
 	VkCommandBuffer commandBuffer =
-	    beginSingleTimeCommands(device, commandPool);
+	    beginSingleTimeCommands(env, commandPool);
 
 	VkImageMemoryBarrier barrier{};
 	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -199,18 +198,18 @@ void translationImageLayout(VkDevice      device,
 	                     0, 0, nullptr, 0, nullptr, 1,
 	                     &barrier);
 
-	endSingleTimeCommands(device, commandBuffer,
-	                      commandPool, graphicQueue);
+	endSingleTimeCommands(env, commandBuffer, commandPool,
+	                      graphicQueue);
 }
 
-void copyBufferToImage(VkDevice      device,
-                       VkCommandPool commandPool,
-                       VkQueue       graphicQueue,
+void copyBufferToImage(AppVkEnviroment &env,
+                       VkCommandPool    commandPool,
+                       VkQueue          graphicQueue,
                        VkBuffer buffer, VkImage image,
                        uint32_t width, uint32_t height)
 {
 	VkCommandBuffer commandBuffer =
-	    beginSingleTimeCommands(device, commandPool);
+	    beginSingleTimeCommands(env, commandPool);
 
 	VkBufferImageCopy region{};
 	region.bufferOffset      = 0;
@@ -230,7 +229,7 @@ void copyBufferToImage(VkDevice      device,
 	    commandBuffer, buffer, image,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-	endSingleTimeCommands(device, commandBuffer,
-	                      commandPool, graphicQueue);
+	endSingleTimeCommands(env, commandBuffer, commandPool,
+	                      graphicQueue);
 }
 }        // namespace App

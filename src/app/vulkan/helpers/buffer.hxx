@@ -1,42 +1,46 @@
 #include <vulkan/vulkan.h>
 
+#include "structs.hxx"
+
 namespace App
 {
-extern void createBuffer(VkDevice           device,
-                         VkPhysicalDevice   physicalDevice,
-                         VkDeviceSize       size,
-                         VkBufferUsageFlags usage,
+extern void createBuffer(AppVkEnviroment      &env,
+                         VkDeviceSize          size,
+                         VkBufferUsageFlags    usage,
                          VkMemoryPropertyFlags properties,
                          VkBuffer             &buffer,
                          VkDeviceMemory &bufferMemory);
 
-extern void
-    copyBuffer(VkDevice device, VkCommandPool commandPool,
-               VkQueue graphicQueue, VkBuffer srcBuffer,
-               VkBuffer dstBuffer, VkDeviceSize size);
+extern void copyBuffer(AppVkEnviroment &env,
+                       VkCommandPool    commandPool,
+                       VkQueue          graphicQueue,
+                       VkBuffer         srcBuffer,
+                       VkBuffer         dstBuffer,
+                       VkDeviceSize     size);
 
 extern uint32_t
-    findMemoryType(VkPhysicalDevice      physicalDevice,
+    findMemoryType(AppVkEnviroment      &env,
                    uint32_t              typeFilter,
                    VkMemoryPropertyFlags properties);
 
 
 extern void endSingleTimeCommands(
-    VkDevice device, VkCommandBuffer commandBuffer,
+    AppVkEnviroment &env, VkCommandBuffer commandBuffer,
     VkCommandPool commandPool, VkQueue graphicQueue);
 
 VkCommandBuffer
-    beginSingleTimeCommands(VkDevice      device,
-                            VkCommandPool commandPool);
+    beginSingleTimeCommands(AppVkEnviroment &env,
+                            VkCommandPool    commandPool);
 
 extern void translationImageLayout(
-    VkDevice device, VkCommandPool commandPool,
+    AppVkEnviroment &env, VkCommandPool commandPool,
     VkQueue graphicQueue, VkImage image, VkFormat format,
     VkImageLayout oldLayout, VkImageLayout newLayout);
 
-extern void copyBufferToImage(VkDevice      device,
-                       VkCommandPool commandPool,
-                       VkQueue       graphicQueue,
-                       VkBuffer buffer, VkImage image,
-                       uint32_t width, uint32_t height);
+extern void copyBufferToImage(AppVkEnviroment &env,
+                              VkCommandPool    commandPool,
+                              VkQueue          graphicQueue,
+                              VkBuffer         buffer,
+                              VkImage image, uint32_t width,
+                              uint32_t height);
 }        // namespace App

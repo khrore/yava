@@ -3,7 +3,6 @@
 #include "app/vulkan/helpers/debug.hxx"
 #include "app/vulkan/settings/validation.hxx"
 
-
 namespace App
 {
 
@@ -14,9 +13,8 @@ void Vulkan::setupDebugMessenger()
 	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 	populateDebugUtilsMessengerCreateInfoEXT(createInfo);
 
-	if (CreateDebugUtilsMessengerEXT(
-	        instance, &createInfo, nullptr,
-	        &debugMessenger) != VK_SUCCESS)
+	if (CreateDebugUtilsMessengerEXT(env, &createInfo,
+	                                 nullptr) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to set up debug messenger!");
@@ -43,7 +41,7 @@ void Vulkan::destroyDebugMessager()
 	if (Settings::isEnableValidationLayers)
 	{
 		DestroyDebugUtilsMessengerEXT(
-		    instance, debugMessenger, nullptr);
+		    env.instance, env.debugMessenger, nullptr);
 	}
 }
 }        // namespace App
