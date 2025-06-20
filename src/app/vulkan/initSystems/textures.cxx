@@ -3,10 +3,13 @@
 #include "app/vulkan/helpers/buffer.hxx"
 #include "app/vulkan/helpers/image.hxx"
 
+#include <cstring>
 #include <stdexcept>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+
+#include <iostream>
 
 namespace App
 {
@@ -36,6 +39,7 @@ void Vulkan::createTextureImage()
 	void *data;
 	vkMapMemory(device, stagingBufferMemory, 0, imageSize,
 	            0, &data);
+	memcpy(data, pixels, static_cast<size_t>(imageSize));
 	vkUnmapMemory(device, stagingBufferMemory);
 	stbi_image_free(pixels);
 
@@ -66,9 +70,10 @@ void Vulkan::createTextureImage()
 	vkFreeMemory(device, stagingBufferMemory, nullptr);
 }
 
-void Vulkan::destroyTextureImageView()
+void Vulkan::destroyTextureImage()
 {
-	vkDestroyImageView(device, textureImageView, nullptr);
+	vkDestroyImage(device, textureImage, nullptr);
+	vkFreeMemory(device, textureImageMemory, nullptr);
 }
 
 void Vulkan::createTextureImageView()
@@ -77,10 +82,9 @@ void Vulkan::createTextureImageView()
 	    device, textureImage, VK_FORMAT_R8G8B8A8_SRGB);
 }
 
-void Vulkan::destroyTextureImage()
+void Vulkan::destroyTextureImageView()
 {
-	vkDestroyImage(device, textureImage, nullptr);
-	vkFreeMemory(device, textureImageMemory, nullptr);
+	vkDestroyImageView(device, textureImageView, nullptr);
 }
 
 void Vulkan::createTextureSampler()
