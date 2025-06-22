@@ -4,13 +4,12 @@
 
 namespace App
 {
-void createImage(AppVkContext &context, uint32_t width,
-                 uint32_t height, VkFormat format,
-                 VkImageTiling         tiling,
-                 VkImageUsageFlags     usage,
-                 VkMemoryPropertyFlags properties,
-                 VkImage              &image,
-                 VkDeviceMemory       &imageMemory)
+void VkHelpers::createImage(
+    VkHelpers::VkContext &context, uint32_t width,
+    uint32_t height, VkFormat format, VkImageTiling tiling,
+    VkImageUsageFlags     usage,
+    VkMemoryPropertyFlags properties, VkImage &image,
+    VkDeviceMemory &imageMemory)
 {
 	VkImageCreateInfo imageInfo{};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -58,8 +57,9 @@ void createImage(AppVkContext &context, uint32_t width,
 	                  0);
 }
 
-VkImageView createImageView(AppVkContext &context,
-                            VkImage image, VkFormat format)
+VkImageView VkHelpers::createImageView(
+    VkHelpers::VkContext &context, VkImage image,
+    VkFormat format)
 {
 	VkImageViewCreateInfo viewInfo{};
 	viewInfo.sType =

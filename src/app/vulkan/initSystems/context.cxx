@@ -1,65 +1,49 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/settings/extensions.hxx"
 #include "app/vulkan/settings/validation.hxx"
-
-#include "app/vulkan/helpers/queue.hxx"
-#include "app/vulkan/helpers/swapChain.hxx"
-
-#include <set>
 
 namespace App
 {
-bool checkDeviceExtensionSupport(
-    VkPhysicalDevice physicalDevice)
+void Vulkan::createSurface()
 {
-	uint32_t extensionCount;
-	vkEnumerateDeviceExtensionProperties(
-	    physicalDevice, nullptr, &extensionCount, nullptr);
-
-	std::vector<VkExtensionProperties> avaliableExtensions(
-	    extensionCount);
-	vkEnumerateDeviceExtensionProperties(
-	    physicalDevice, nullptr, &extensionCount,
-	    avaliableExtensions.data());
-
-	std::set<std::string> requiredExtensions(
-	    Settings::deviceExtensions.begin(),
-	    Settings::deviceExtensions.end());
-
-	for (const auto &extension : avaliableExtensions)
+	if (glfwCreateWindowSurface(
+	        vkContext.instance, &window->get(), nullptr,
+	        &vkContext.surface) != VK_SUCCESS)
 	{
-		requiredExtensions.erase(extension.extensionName);
+		throw std::runtime_error(
+		    "failed to create window surface!");
 	}
-
-	return requiredExtensions.empty();
 }
 
-bool isDeviceSuitable(VkPhysicalDevice physicalDevice,
-                      VkSurfaceKHR     surface)
+void Vulkan::destroySurface()
 {
-	QueueFamilyIndices indices =
-	    findQueueFamilies(physicalDevice, surface);
+	vkDestroySurfaceKHR(vkContext.instance,
+	                    vkContext.surface, nullptr);
+}
+void Vulkan::setupDebugMessenger()
+{
+	if (!Settings::isEnableValidationLayers)
+		return;
+	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
+	VkHelpers::populateDebugUtilsMessengerCreateInfoEXT(
+	    createInfo);
 
-	bool isExtensionSupported =
-	    checkDeviceExtensionSupport(physicalDevice);
-	bool isSwapChainAdequate = false;
-	if (isExtensionSupported)
+	if (VkHelpers::createDebugUtilsMessengerEXT(
+	        vkContext, &createInfo, nullptr) != VK_SUCCESS)
 	{
-		SwapChainSupportDetails swapChainSupport =
-		    querySwapChainSupport(physicalDevice, surface);
-		isSwapChainAdequate =
-		    !swapChainSupport.formats.empty() &&
-		    !swapChainSupport.presentModes.empty();
+		throw std::runtime_error(
+		    "failed to set up debug messenger!");
 	}
+}
 
-	VkPhysicalDeviceFeatures supportedFeatures;
-	vkGetPhysicalDeviceFeatures(physicalDevice,
-	                            &supportedFeatures);
 
-	return indices.isComplite() && isExtensionSupported &&
-	       isSwapChainAdequate &&
-	       supportedFeatures.samplerAnisotropy;
+void Vulkan::destroyDebugMessager()
+{
+	if (Settings::isEnableValidationLayers)
+	{
+		VkHelpers::destroyDebugUtilsMessengerEXT(vkContext,
+		                                         nullptr);
+	}
 }
 
 void Vulkan::createLogicalDevice()

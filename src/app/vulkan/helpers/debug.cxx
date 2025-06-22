@@ -2,7 +2,7 @@
 
 namespace App
 {
-void populateDebugUtilsMessengerCreateInfoEXT(
+void VkHelpers::populateDebugUtilsMessengerCreateInfoEXT(
     VkDebugUtilsMessengerCreateInfoEXT &createInfo)
 {
 	createInfo.sType =
@@ -19,8 +19,8 @@ void populateDebugUtilsMessengerCreateInfoEXT(
 	createInfo.pUserData       = nullptr;
 }
 
-VkResult CreateDebugUtilsMessengerEXT(
-    AppVkContext                             &context,
+VkResult VkHelpers::createDebugUtilsMessengerEXT(
+    VkHelpers::VkContext                     &context,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks              *pAllocator)
 {
@@ -36,6 +36,21 @@ VkResult CreateDebugUtilsMessengerEXT(
 	else
 	{
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
+	}
+}
+
+void VkHelpers::destroyDebugUtilsMessengerEXT(
+    VkHelpers::VkContext        &context,
+    const VkAllocationCallbacks *pAllocator)
+{
+	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)
+	    vkGetInstanceProcAddr(context.instance,
+	                          "vkDestroyDebugUtilsMes"
+	                          "sengerEXT");
+	if (func != nullptr)
+	{
+		func(context.instance, context.debugMessenger,
+		     pAllocator);
 	}
 }
 }        // namespace App

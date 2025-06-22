@@ -1,8 +1,5 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/helpers/buffer.hxx"
-#include "app/vulkan/helpers/image.hxx"
-
 #include <cstring>
 #include <stdexcept>
 
@@ -28,61 +25,66 @@ void Vulkan::createTextureImage()
 	VkBuffer       stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 
-	createBuffer(device, physicalDevice, imageSize,
-	             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-	             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-	                 VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-	             stagingBuffer, stagingBufferMemory);
+	VkHelpers::createBuffer(
+	    vkContext, imageSize,
+	    VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+	    stagingBuffer, stagingBufferMemory);
 
 	void *data;
-	vkMapMemory(device, stagingBufferMemory, 0, imageSize,
-	            0, &data);
+	vkMapMemory(vkContext.device, stagingBufferMemory, 0,
+	            imageSize, 0, &data);
 	memcpy(data, pixels, static_cast<size_t>(imageSize));
-	vkUnmapMemory(device, stagingBufferMemory);
+	vkUnmapMemory(vkContext.device, stagingBufferMemory);
 	stbi_image_free(pixels);
 
-	createImage(device, physicalDevice, texWidth, texHeight,
-	            VK_FORMAT_R8G8B8A8_SRGB,
-	            VK_IMAGE_TILING_OPTIMAL,
-	            VK_IMAGE_USAGE_TRANSFER_DST_BIT |
-	                VK_IMAGE_USAGE_SAMPLED_BIT,
-	            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-	            textureImage, textureImageMemory);
+	VkHelpers::createImage(
+	    vkContext, texWidth, texHeight,
+	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+	    VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+	        VK_IMAGE_USAGE_SAMPLED_BIT,
+	    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage,
+	    textureImageMemory);
 
-	translationImageLayout(
-	    device, commandPool, graphicQueue, textureImage,
+	VkHelpers::translationImageLayout(
+	    vkContext, commandPool, textureImage,
 	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	copyBufferToImage(device, commandPool, graphicQueue,
-	                  stagingBuffer, textureImage,
-	                  static_cast<uint32_t>(texWidth),
-	                  static_cast<uint32_t>(texHeight));
+	VkHelpers::copyBufferToImage(
+	    vkContext, commandPool, stagingBuffer, textureImage,
+	    static_cast<uint32_t>(texWidth),
+	    static_cast<uint32_t>(texHeight));
 
-	translationImageLayout(
-	    device, commandPool, graphicQueue, textureImage,
+	VkHelpers::translationImageLayout(
+	    vkContext, commandPool, textureImage,
 	    VK_FORMAT_R8G8B8A8_SRGB,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 	    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	vkDestroyBuffer(device, stagingBuffer, nullptr);
-	vkFreeMemory(device, stagingBufferMemory, nullptr);
+	vkDestroyBuffer(vkContext.device, stagingBuffer,
+	                nullptr);
+	vkFreeMemory(vkContext.device, stagingBufferMemory,
+	             nullptr);
 }
 
 void Vulkan::destroyTextureImage()
 {
-	vkDestroyImage(device, textureImage, nullptr);
-	vkFreeMemory(device, textureImageMemory, nullptr);
+	vkDestroyImage(vkContext.device, textureImage, nullptr);
+	vkFreeMemory(vkContext.device, textureImageMemory,
+	             nullptr);
 }
 
 void Vulkan::createTextureImageView()
 {
-	textureImageView = createImageView(
-	    device, textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+	textureImageView = VkHelpers::createImageView(
+	    vkContext, textureImage, VK_FORMAT_R8G8B8A8_SRGB);
 }
 
 void Vulkan::destroyTextureImageView()
 {
-	vkDestroyImageView(device, textureImageView, nullptr);
+	vkDestroyImageView(vkContext.device, textureImageView,
+	                   nullptr);
 }
 
 void Vulkan::createTextureSampler()
@@ -101,7 +103,7 @@ void Vulkan::createTextureSampler()
 	    VK_SAMPLER_ADDRESS_MODE_REPEAT;
 
 	VkPhysicalDeviceProperties properties{};
-	vkGetPhysicalDeviceProperties(physicalDevice,
+	vkGetPhysicalDeviceProperties(vkContext.physicalDevice,
 	                              &properties);
 	samplerInfo.anisotropyEnable = VK_TRUE;
 	samplerInfo.maxAnisotropy =
@@ -117,7 +119,8 @@ void Vulkan::createTextureSampler()
 	samplerInfo.minLod     = 0.0f;
 	samplerInfo.maxLod     = 0.0f;
 
-	if (vkCreateSampler(device, &samplerInfo, nullptr,
+	if (vkCreateSampler(vkContext.device, &samplerInfo,
+	                    nullptr,
 	                    &textureSampler) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -127,6 +130,7 @@ void Vulkan::createTextureSampler()
 
 void Vulkan::destroyTextureSampler()
 {
-	vkDestroySampler(device, textureSampler, nullptr);
+	vkDestroySampler(vkContext.device, textureSampler,
+	                 nullptr);
 }
 }        // namespace App

@@ -7,15 +7,6 @@
 #include <cstdint>
 #include <vector>
 
-struct SwapChain
-{
-	std::vector<VkImage>       swapChainImages;
-	std::vector<VkImageView>   swapChainImageViews;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-	VkSwapchainKHR             swapChain;
-	VkFormat                   swapChainImageFormat;
-	VkExtent2D                 swapChainExtent;
-};
 
 namespace App
 {
@@ -92,14 +83,8 @@ class Vulkan
   private:
 	Window *window;
 
-	AppVkEnviroment env;
-
-	VkSwapchainKHR             swapChain;
-	std::vector<VkImage>       swapChainImages;
-	VkFormat                   swapChainImageFormat;
-	VkExtent2D                 swapChainExtent;
-	std::vector<VkImageView>   swapChainImageViews;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
+	VkHelpers::VkContext        vkContext;
+	VkHelpers::SwapChainContext swapChainContext;
 
 	VkRenderPass                 renderPass;
 	VkDescriptorSetLayout        descriptorSetLayout;
@@ -116,7 +101,7 @@ class Vulkan
 
 	uint32_t currentFrame = 0;
 
-	const std::vector<Vertex> vertices = {
+	const std::vector<VkHelpers::Vertex> vertices = {
 	    {{-0.5f, -0.5f, 0.0f},
 	     {1.0f, 1.0f, 0.0f},
 	     {1.0f, 0.0f}},

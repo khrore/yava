@@ -7,14 +7,14 @@ namespace App
 {
 void Vulkan::drawFrame()
 {
-	vkWaitForFences(device, 1,
-	                &inFlightFances[currentFrame],
-	                VK_TRUE, UINT64_MAX);
+	vkWaitForFences(vkContext.device, 1,
+	                &inFlightFances[currentFrame], VK_TRUE,
+	                UINT64_MAX);
 
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(
-	    device, swapChain, UINT64_MAX,
-	    imageAvailableSemaphores[currentFrame],
+	    vkContext.device, swapChainContext.instance,
+	    UINT64_MAX, imageAvailableSemaphores[currentFrame],
 	    VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR)
@@ -30,28 +30,26 @@ void Vulkan::drawFrame()
 		    "images!");
 	}
 
-	vkResetFences(device, 1,
+	vkResetFences(vkContext.device, 1,
 	              &inFlightFances[currentFrame]);
 
-	vkResetCommandBuffer(
-	    commandBuffers[currentFrame], 0);
+	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 
-	recordCommandBuffer(
-	    commandBuffers[currentFrame], imageIndex);
+	recordCommandBuffer(commandBuffers[currentFrame],
+	                    imageIndex);
 
 	updateModelViewProjectionMatrix(currentFrame);
 
 	VkSubmitInfo submitInfo{};
-	submitInfo.sType =
-	    VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
 	VkSemaphore waitSemaphores[] = {
 	    imageAvailableSemaphores[currentFrame]};
 	VkPipelineStageFlags waitStages[] = {
 	    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores   = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
+	submitInfo.pWaitSemaphores    = waitSemaphores;
+	submitInfo.pWaitDstStageMask  = waitStages;
 
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers =
@@ -60,13 +58,11 @@ void Vulkan::drawFrame()
 	VkSemaphore signalSemaphores[] = {
 	    renderFinishedSemaphores[currentFrame]};
 	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores =
-	    signalSemaphores;
+	submitInfo.pSignalSemaphores    = signalSemaphores;
 
 	if (vkQueueSubmit(
-	        graphicQueue, 1, &submitInfo,
-	        inFlightFances[currentFrame]) !=
-	    VK_SUCCESS)
+	        vkContext.graphicQueue, 1, &submitInfo,
+	        inFlightFances[currentFrame]) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to submit draw command "
@@ -74,21 +70,20 @@ void Vulkan::drawFrame()
 	}
 
 	VkPresentInfoKHR presentInfo{};
-	presentInfo.sType =
-	    VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores =
-	    signalSemaphores;
+	presentInfo.pWaitSemaphores    = signalSemaphores;
 
-	VkSwapchainKHR swapChains[] = {swapChain};
-	presentInfo.swapchainCount  = 1;
-	presentInfo.pSwapchains     = swapChains;
-	presentInfo.pImageIndices   = &imageIndex;
+	VkSwapchainKHR swapChains[] = {
+	    swapChainContext.instance};
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains    = swapChains;
+	presentInfo.pImageIndices  = &imageIndex;
 
 	presentInfo.pResults = nullptr;
 
-	result = vkQueuePresentKHR(presentQueue,
+	result = vkQueuePresentKHR(vkContext.presentQueue,
 	                           &presentInfo);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR ||
@@ -105,12 +100,12 @@ void Vulkan::drawFrame()
 		    "image!");
 	}
 
-	currentFrame = (currentFrame + 1) %
-	               Settings::MAX_FRAMES_IN_FLIGHT;
+	currentFrame =
+	    (currentFrame + 1) % Settings::MAX_FRAMES_IN_FLIGHT;
 }
 
 void Vulkan::endDraw()
 {
-	vkDeviceWaitIdle(device);
+	vkDeviceWaitIdle(vkContext.device);
 }
 }        // namespace App

@@ -1,7 +1,5 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/helpers/queue.hxx"
-
 #include "app/vulkan/settings/frames.hxx"
 
 namespace App
@@ -28,9 +26,10 @@ void Vulkan::recordCommandBuffer(
 	    VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassInfo.renderPass = renderPass;
 	renderPassInfo.framebuffer =
-	    swapChainFramebuffers[imageIndex];
+	    swapChainContext.framebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = {0, 0};
-	renderPassInfo.renderArea.extent = swapChainExtent;
+	renderPassInfo.renderArea.extent =
+	    swapChainContext.extent;
 
 	VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
 	renderPassInfo.clearValueCount = 1;
@@ -54,16 +53,16 @@ void Vulkan::recordCommandBuffer(
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
 	viewport.width =
-	    static_cast<float>(swapChainExtent.width);
+	    static_cast<float>(swapChainContext.extent.width);
 	viewport.height =
-	    static_cast<float>(swapChainExtent.height);
+	    static_cast<float>(swapChainContext.extent.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = {0, 0};
-	scissor.extent = swapChainExtent;
+	scissor.extent = swapChainContext.extent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 	vkCmdBindDescriptorSets(
@@ -93,9 +92,9 @@ void Vulkan::createCommandBuffer()
 	allocInfo.level       = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = commandBuffers.size();
 
-	if (vkAllocateCommandBuffers(device, &allocInfo,
-	                             commandBuffers.data()) !=
-	    VK_SUCCESS)
+	if (vkAllocateCommandBuffers(
+	        vkContext.device, &allocInfo,
+	        commandBuffers.data()) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to allocate command buffer");
@@ -104,8 +103,8 @@ void Vulkan::createCommandBuffer()
 
 void Vulkan::createCommandPool()
 {
-	QueueFamilyIndices queueFamilyIndices =
-	    findQueueFamilies(physicalDevice, surface);
+	VkHelpers::QueueFamilyIndices queueFamilyIndices =
+	    VkHelpers::findQueueFamilies(vkContext);
 
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType =
@@ -114,7 +113,8 @@ void Vulkan::createCommandPool()
 	    VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 	poolInfo.queueFamilyIndex =
 	    queueFamilyIndices.graphicsFamily.value();
-	if (vkCreateCommandPool(device, &poolInfo, nullptr,
+	if (vkCreateCommandPool(vkContext.device, &poolInfo,
+	                        nullptr,
 	                        &commandPool) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -124,6 +124,7 @@ void Vulkan::createCommandPool()
 
 void Vulkan::destroyCommandPool()
 {
-	vkDestroyCommandPool(device, commandPool, nullptr);
+	vkDestroyCommandPool(vkContext.device, commandPool,
+	                     nullptr);
 }
 }        // namespace App

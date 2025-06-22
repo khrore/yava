@@ -1,6 +1,5 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/helpers/mvp.hxx"
 #include "app/vulkan/settings/frames.hxx"
 
 
@@ -35,7 +34,7 @@ void Vulkan::createDescriptorSetLayout()
 	layoutInfo.pBindings = binding.data();
 
 	if (vkCreateDescriptorSetLayout(
-	        device, &layoutInfo, nullptr,
+	        vkContext.device, &layoutInfo, nullptr,
 	        &descriptorSetLayout) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -46,7 +45,7 @@ void Vulkan::createDescriptorSetLayout()
 void Vulkan::destrpyDescriptorSetLayout()
 {
 	vkDestroyDescriptorSetLayout(
-	    device, descriptorSetLayout, nullptr);
+	    vkContext.device, descriptorSetLayout, nullptr);
 }
 
 void Vulkan::createDescriptorPool()
@@ -69,8 +68,8 @@ void Vulkan::createDescriptorPool()
 	poolInfo.maxSets    = static_cast<uint32_t>(
         Settings::MAX_FRAMES_IN_FLIGHT);
 
-	if (vkCreateDescriptorPool(device, &poolInfo, nullptr,
-	                           &descriptorPool) !=
+	if (vkCreateDescriptorPool(vkContext.device, &poolInfo,
+	                           nullptr, &descriptorPool) !=
 	    VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -80,8 +79,8 @@ void Vulkan::createDescriptorPool()
 
 void Vulkan::destroyDescriptorPool()
 {
-	vkDestroyDescriptorPool(device, descriptorPool,
-	                        nullptr);
+	vkDestroyDescriptorPool(vkContext.device,
+	                        descriptorPool, nullptr);
 }
 
 void Vulkan::createDescriptorSets()
@@ -98,9 +97,9 @@ void Vulkan::createDescriptorSets()
 	allocInfo.pSetLayouts = layouts.data();
 
 	descriptorSets.resize(Settings::MAX_FRAMES_IN_FLIGHT);
-	if (vkAllocateDescriptorSets(device, &allocInfo,
-	                             descriptorSets.data()) !=
-	    VK_SUCCESS)
+	if (vkAllocateDescriptorSets(
+	        vkContext.device, &allocInfo,
+	        descriptorSets.data()) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to allocate desciptor sets!");
@@ -113,7 +112,7 @@ void Vulkan::createDescriptorSets()
 		bufferInfo.buffer = mvpBuffers[i];
 		bufferInfo.offset = 0;
 		bufferInfo.range =
-		    sizeof(ModelViewProjectionMatrix);
+		    sizeof(VkHelpers::ModelViewProjectionMatrix);
 
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout =
@@ -147,7 +146,7 @@ void Vulkan::createDescriptorSets()
 		//     nullptr;        // optional
 
 		vkUpdateDescriptorSets(
-		    device,
+		    vkContext.device,
 		    static_cast<uint32_t>(descriptorWrites.size()),
 		    descriptorWrites.data(), 0, nullptr);
 	}

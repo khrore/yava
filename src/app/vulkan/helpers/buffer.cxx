@@ -2,9 +2,9 @@
 
 namespace App
 {
-uint32_t findMemoryType(AppVkContext         &context,
-                        uint32_t              typeFilter,
-                        VkMemoryPropertyFlags properties)
+uint32_t VkHelpers::findMemoryType(
+    VkHelpers::VkContext &context, uint32_t typeFilter,
+    VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
 	vkGetPhysicalDeviceMemoryProperties(
@@ -25,11 +25,11 @@ uint32_t findMemoryType(AppVkContext         &context,
 	    "failed to find suitable memory type!");
 }
 
-void createBuffer(AppVkContext &context, VkDeviceSize size,
-                  VkBufferUsageFlags    usage,
-                  VkMemoryPropertyFlags properties,
-                  VkBuffer             &buffer,
-                  VkDeviceMemory       &bufferMemory)
+void VkHelpers::createBuffer(
+    VkHelpers::VkContext &context, VkDeviceSize size,
+    VkBufferUsageFlags    usage,
+    VkMemoryPropertyFlags properties, VkBuffer &buffer,
+    VkDeviceMemory &bufferMemory)
 {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -69,9 +69,9 @@ void createBuffer(AppVkContext &context, VkDeviceSize size,
 	                   0);
 }
 
-VkCommandBuffer
-    beginSingleTimeCommands(AppVkContext &context,
-                            VkCommandPool commandPool)
+VkCommandBuffer VkHelpers::beginSingleTimeCommands(
+    VkHelpers::VkContext &context,
+    VkCommandPool         commandPool)
 {
 	// create command buffer
 	VkCommandBufferAllocateInfo allocInfo{};
@@ -97,10 +97,10 @@ VkCommandBuffer
 	return commandBuffer;
 }
 
-void endSingleTimeCommands(AppVkContext   &context,
-                           VkCommandBuffer commandBuffer,
-                           VkCommandPool   commandPool,
-                           VkQueue         graphicQueue)
+void VkHelpers::endSingleTimeCommands(
+    VkHelpers::VkContext &context,
+    VkCommandBuffer       commandBuffer,
+    VkCommandPool         commandPool)
 {
 	// only containing the copy command
 	vkEndCommandBuffer(commandBuffer);
@@ -110,18 +110,19 @@ void endSingleTimeCommands(AppVkContext   &context,
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers    = &commandBuffer;
 
-	vkQueueSubmit(graphicQueue, 1, &submitInfo,
+	vkQueueSubmit(context.graphicQueue, 1, &submitInfo,
 	              VK_NULL_HANDLE);
-	vkQueueWaitIdle(graphicQueue);
+	vkQueueWaitIdle(context.graphicQueue);
 
 	vkFreeCommandBuffers(context.device, commandPool, 1,
 	                     &commandBuffer);
 }
 
-void copyBuffer(AppVkContext &context,
-                VkCommandPool commandPool,
-                VkQueue graphicQueue, VkBuffer srcBuffer,
-                VkBuffer dstBuffer, VkDeviceSize size)
+void VkHelpers::copyBuffer(VkHelpers::VkContext &context,
+                           VkCommandPool commandPool,
+                           VkBuffer      srcBuffer,
+                           VkBuffer      dstBuffer,
+                           VkDeviceSize  size)
 {
 	VkCommandBuffer commandBuffer =
 	    beginSingleTimeCommands(context, commandPool);
@@ -135,15 +136,14 @@ void copyBuffer(AppVkContext &context,
 	                &copyRegion);
 
 	endSingleTimeCommands(context, commandBuffer,
-	                      commandPool, graphicQueue);
+	                      commandPool);
 }
 
-void translationImageLayout(AppVkContext &context,
-                            VkCommandPool commandPool,
-                            VkQueue       graphicQueue,
-                            VkImage image, VkFormat format,
-                            VkImageLayout oldLayout,
-                            VkImageLayout newLayout)
+void VkHelpers::translationImageLayout(
+    VkHelpers::VkContext &context,
+    VkCommandPool commandPool, VkImage image,
+    VkFormat format, VkImageLayout oldLayout,
+    VkImageLayout newLayout)
 {
 	VkCommandBuffer commandBuffer =
 	    beginSingleTimeCommands(context, commandPool);
@@ -199,14 +199,13 @@ void translationImageLayout(AppVkContext &context,
 	                     &barrier);
 
 	endSingleTimeCommands(context, commandBuffer,
-	                      commandPool, graphicQueue);
+	                      commandPool);
 }
 
-void copyBufferToImage(AppVkContext &context,
-                       VkCommandPool commandPool,
-                       VkQueue       graphicQueue,
-                       VkBuffer buffer, VkImage image,
-                       uint32_t width, uint32_t height)
+void VkHelpers::copyBufferToImage(
+    VkHelpers::VkContext &context,
+    VkCommandPool commandPool, VkBuffer buffer,
+    VkImage image, uint32_t width, uint32_t height)
 {
 	VkCommandBuffer commandBuffer =
 	    beginSingleTimeCommands(context, commandPool);
@@ -230,6 +229,6 @@ void copyBufferToImage(AppVkContext &context,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 	endSingleTimeCommands(context, commandBuffer,
-	                      commandPool, graphicQueue);
+	                      commandPool);
 }
 }        // namespace App
