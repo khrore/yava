@@ -1,11 +1,8 @@
 #pragma ones
 
-#define GLFW_INCLUDE_VULKAN 1
-#include <GLFW/glfw3.h>
+#include "helpers/helpers.hxx"
 
 #include "app/window/window.hxx"
-#include "app/vulkan/helpers/vertex.hxx"
-#include "app/vulkan/helpers/structs.hxx"
 
 #include <cstdint>
 #include <vector>

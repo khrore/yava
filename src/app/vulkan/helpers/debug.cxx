@@ -1,4 +1,4 @@
-#include "debug.hxx"
+#include "helpers.hxx"
 
 namespace App
 {
@@ -20,17 +20,18 @@ void populateDebugUtilsMessengerCreateInfoEXT(
 }
 
 VkResult CreateDebugUtilsMessengerEXT(
-    AppVkEnviroment                          &env,
+    AppVkContext                             &context,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks              *pAllocator)
 {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)
 	    vkGetInstanceProcAddr(
-	        env.instance, "vkCreateDebugUtilsMessengerEXT");
+	        context.instance,
+	        "vkCreateDebugUtilsMessengerEXT");
 	if (func != nullptr)
 	{
-		return func(env.instance, pCreateInfo, pAllocator,
-		            &env.debugMessenger);
+		return func(context.instance, pCreateInfo,
+		            pAllocator, &context.debugMessenger);
 	}
 	else
 	{
