@@ -1,22 +1,26 @@
 #include "helpers.hxx"
 
+#include "app/vulkan/settings/extensions.hxx"
+
 #include <algorithm>
 #include <cstdint>
 #include <limits>
+#include <set>
 
 namespace App
 {
 bool VkHelpers::checkDeviceExtensionSupport(
-    VkContext &context)
+    VkHelpers::VkContext &context)
 {
 	uint32_t extensionCount;
 	vkEnumerateDeviceExtensionProperties(
-	    physicalDevice, nullptr, &extensionCount, nullptr);
+	    context.physicalDevice, nullptr, &extensionCount,
+	    nullptr);
 
 	std::vector<VkExtensionProperties> avaliableExtensions(
 	    extensionCount);
 	vkEnumerateDeviceExtensionProperties(
-	    physicalDevice, nullptr, &extensionCount,
+	    context.physicalDevice, nullptr, &extensionCount,
 	    avaliableExtensions.data());
 
 	std::set<std::string> requiredExtensions(
@@ -31,26 +35,26 @@ bool VkHelpers::checkDeviceExtensionSupport(
 	return requiredExtensions.empty();
 }
 
-bool isDeviceSuitable(VkPhysicalDevice physicalDevice,
-                      VkSurfaceKHR     surface)
+bool VkHelpers::isDeviceSuitable(
+    VkHelpers::VkContext &context)
 {
-	QueueFamilyIndices indices =
-	    findQueueFamilies(physicalDevice, surface);
+	VkHelpers::QueueFamilyIndices indices =
+	    findQueueFamilies(context);
 
 	bool isExtensionSupported =
-	    checkDeviceExtensionSupport(physicalDevice);
+	    checkDeviceExtensionSupport(context);
 	bool isSwapChainAdequate = false;
 	if (isExtensionSupported)
 	{
 		SwapChainSupportDetails swapChainSupport =
-		    querySwapChainSupport(physicalDevice, surface);
+		    querySwapChainSupport(context);
 		isSwapChainAdequate =
 		    !swapChainSupport.formats.empty() &&
 		    !swapChainSupport.presentModes.empty();
 	}
 
 	VkPhysicalDeviceFeatures supportedFeatures;
-	vkGetPhysicalDeviceFeatures(physicalDevice,
+	vkGetPhysicalDeviceFeatures(context.physicalDevice,
 	                            &supportedFeatures);
 
 	return indices.isComplite() && isExtensionSupported &&

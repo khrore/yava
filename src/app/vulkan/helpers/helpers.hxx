@@ -60,6 +60,28 @@ class VkHelpers
 		VkSurfaceCapabilitiesKHR        capabilities;
 	};
 
+	struct SemaphoresFences
+	{
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence>     inFlightFences;
+	};
+
+	struct ObjectBuffer
+	{
+		std::vector<VkCommandBuffer> commands;
+		std::vector<VkBuffer>        mvps;
+		VkBuffer                     index;
+		VkBuffer                     vertex;
+	};
+
+	struct RenderBuffer
+	{
+		std::vector<VkDescriptorSet> descriptorSets;
+		VkRenderPass                 renderPass;
+		VkPipeline                   graphicPipeline;
+	};
+
 	struct Vertex
 	{
 		glm::vec3 pos;
@@ -109,6 +131,14 @@ class VkHelpers
 
 			return attributeDescriptions;
 		}
+	};
+
+	struct Texture
+	{
+		VkImage        image;
+		VkDeviceMemory memory;
+		VkImageView    view;
+		VkSampler      sampler;
 	};
 	// Functions
 	// Debug

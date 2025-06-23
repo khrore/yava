@@ -6,7 +6,7 @@ namespace App
 void Vulkan::createRenderPass()
 {
 	VkAttachmentDescription colorAttachment{};
-	colorAttachment.format  = swapChainImageFormat;
+	colorAttachment.format  = swapChainContext.imageFormat;
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	colorAttachment.loadOp  = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -52,7 +52,8 @@ void Vulkan::createRenderPass()
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies   = &dependency;
 
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr,
+	if (vkCreateRenderPass(vkContext.device,
+	                       &renderPassInfo, nullptr,
 	                       &renderPass) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -62,6 +63,7 @@ void Vulkan::createRenderPass()
 
 void Vulkan::destroyRenderPass()
 {
-	vkDestroyRenderPass(device, renderPass, nullptr);
+	vkDestroyRenderPass(vkContext.device, renderPass,
+	                    nullptr);
 }
 }        // namespace App

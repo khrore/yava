@@ -1,6 +1,5 @@
 #include "app/vulkan/vulkan.hxx"
 
-#include "app/vulkan/helpers/debug.hxx"
 #include "app/vulkan/settings/validation.hxx"
 
 
@@ -102,7 +101,7 @@ void Vulkan::initInstance()
 		        Settings::enabledValidationLayers.size());
 		createInfo.ppEnabledLayerNames =
 		    Settings::enabledValidationLayers.data();
-		populateDebugUtilsMessengerCreateInfoEXT(
+		VkHelpers::populateDebugUtilsMessengerCreateInfoEXT(
 		    debugCreateInfo);
 		createInfo.pNext =
 		    (VkDebugUtilsMessengerCreateInfoEXT
@@ -116,8 +115,8 @@ void Vulkan::initInstance()
 
 	// creating instance
 
-	if (vkCreateInstance(&createInfo, nullptr, &env.instance) !=
-	    VK_SUCCESS)
+	if (vkCreateInstance(&createInfo, nullptr,
+	                     &vkContext.instance) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to create instance");
@@ -143,6 +142,6 @@ void Vulkan::initInstance()
 
 void Vulkan::destroyInstance()
 {
-	vkDestroyInstance(env.instance, nullptr);
+	vkDestroyInstance(vkContext.instance, nullptr);
 }
 }        // namespace App

@@ -97,9 +97,9 @@ void Vulkan::createGraphicsPipline()
 	    VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
 	auto bindingDescription =
-	    Vertex::getBindingDescription();
+	    VkHelpers::Vertex::getBindingDescription();
 	auto attributeDescriptions =
-	    Vertex::getAttributeDescriptions();
+	    VkHelpers::Vertex::getAttributeDescriptions();
 
 	vertexInputInfo.vertexBindingDescriptionCount = 1;
 	vertexInputInfo.pVertexBindingDescriptions =
