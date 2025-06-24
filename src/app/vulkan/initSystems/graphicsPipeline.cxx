@@ -56,10 +56,10 @@ void Vulkan::createGraphicsPipline()
 	auto fragShaderCode =
 	    readFile("assets/shaders/traingle.frag.spv");
 
-	VkShaderModule vertShaderModule =
-	    createShaderModule(vertShaderCode, device);
-	VkShaderModule fragShaderModule =
-	    createShaderModule(fragShaderCode, device);
+	VkShaderModule vertShaderModule = createShaderModule(
+	    vertShaderCode, vkContext.device);
+	VkShaderModule fragShaderModule = createShaderModule(
+	    fragShaderCode, vkContext.device);
 
 	//
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
@@ -118,16 +118,17 @@ void Vulkan::createGraphicsPipline()
 
 	//
 	VkViewport viewport{};
-	viewport.x        = 0.0f;
-	viewport.y        = 0.0f;
-	viewport.width    = (float) swapChainExtent.width;
-	viewport.height   = (float) swapChainExtent.height;
+	viewport.x     = 0.0f;
+	viewport.y     = 0.0f;
+	viewport.width = (float) swapChainContext.extent.width;
+	viewport.height =
+	    (float) swapChainContext.extent.height;
 	viewport.maxDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor{};
 	scissor.offset = {0, 0};
-	scissor.extent = swapChainExtent;
+	scissor.extent = swapChainContext.extent;
 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType =
@@ -218,9 +219,9 @@ void Vulkan::createGraphicsPipline()
 	pipelineLayoutInfo.pPushConstantRanges =
 	    nullptr;        // optional
 
-	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo,
-	                           nullptr, &pipelineLayout) !=
-	    VK_SUCCESS)
+	if (vkCreatePipelineLayout(
+	        vkContext.device, &pipelineLayoutInfo, nullptr,
+	        &pipelineLayout) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to create pipeline layout!");
@@ -251,23 +252,25 @@ void Vulkan::createGraphicsPipline()
 	pipelineInfo.basePipelineIndex = -1;        // optional
 
 	if (vkCreateGraphicsPipelines(
-	        device, VK_NULL_HANDLE, 1, &pipelineInfo,
-	        nullptr, &graphicPipeline) != VK_SUCCESS)
+	        vkContext.device, VK_NULL_HANDLE, 1,
+	        &pipelineInfo, nullptr,
+	        &graphicPipeline) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to create graphics pipeline");
 	}
 
-	vkDestroyShaderModule(device, vertShaderModule,
-	                      nullptr);
-	vkDestroyShaderModule(device, fragShaderModule,
-	                      nullptr);
+	vkDestroyShaderModule(vkContext.device,
+	                      vertShaderModule, nullptr);
+	vkDestroyShaderModule(vkContext.device,
+	                      fragShaderModule, nullptr);
 }
 
 void Vulkan::destroyGraphicsPipline()
 {
-	vkDestroyPipeline(device, graphicPipeline, nullptr);
-	vkDestroyPipelineLayout(device, pipelineLayout,
-	                        nullptr);
+	vkDestroyPipeline(vkContext.device, graphicPipeline,
+	                  nullptr);
+	vkDestroyPipelineLayout(vkContext.device,
+	                        pipelineLayout, nullptr);
 }
 }        // namespace App

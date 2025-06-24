@@ -5,9 +5,9 @@
 namespace App
 {
 void VkHelpers::createImage(
-    VkHelpers::VkContext &context, uint32_t width,
-    uint32_t height, VkFormat format, VkImageTiling tiling,
-    VkImageUsageFlags     usage,
+    VkDevice device, VkPhysicalDevice physicalDevice,
+    uint32_t width, uint32_t height, VkFormat format,
+    VkImageTiling tiling, VkImageUsageFlags usage,
     VkMemoryPropertyFlags properties, VkImage &image,
     VkDeviceMemory &imageMemory)
 {
@@ -27,14 +27,14 @@ void VkHelpers::createImage(
 	imageInfo.samples       = VK_SAMPLE_COUNT_1_BIT;
 	imageInfo.flags         = 0;        // optional
 
-	if (vkCreateImage(context.device, &imageInfo, nullptr,
+	if (vkCreateImage(device, &imageInfo, nullptr,
 	                  &image) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create image!");
 	}
 
 	VkMemoryRequirements memRequirements;
-	vkGetImageMemoryRequirements(context.device, image,
+	vkGetImageMemoryRequirements(device, image,
 	                             &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{};
@@ -42,24 +42,22 @@ void VkHelpers::createImage(
 	    VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize  = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(
-	    context, memRequirements.memoryTypeBits,
+	    physicalDevice, memRequirements.memoryTypeBits,
 	    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-	if (vkAllocateMemory(context.device, &allocInfo,
-	                     nullptr,
+	if (vkAllocateMemory(device, &allocInfo, nullptr,
 	                     &imageMemory) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to allocate image memory!");
 	}
 
-	vkBindImageMemory(context.device, image, imageMemory,
-	                  0);
+	vkBindImageMemory(device, image, imageMemory, 0);
 }
 
-VkImageView VkHelpers::createImageView(
-    VkHelpers::VkContext &context, VkImage image,
-    VkFormat format)
+VkImageView VkHelpers::createImageView(VkDevice device,
+                                       VkImage  image,
+                                       VkFormat format)
 {
 	VkImageViewCreateInfo viewInfo{};
 	viewInfo.sType =
@@ -78,8 +76,7 @@ VkImageView VkHelpers::createImageView(
 	// is defined as 0 anyway
 
 	VkImageView imageView;
-	if (vkCreateImageView(context.device, &viewInfo,
-	                      nullptr,
+	if (vkCreateImageView(device, &viewInfo, nullptr,
 	                      &imageView) != VK_SUCCESS)
 	{
 		throw std::runtime_error(

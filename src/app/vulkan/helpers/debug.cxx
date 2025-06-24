@@ -20,18 +20,18 @@ void VkHelpers::populateDebugUtilsMessengerCreateInfoEXT(
 }
 
 VkResult VkHelpers::createDebugUtilsMessengerEXT(
-    VkHelpers::VkContext                     &context,
+    VkInstance               instance,
+    VkDebugUtilsMessengerEXT debugMessenger,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks              *pAllocator)
 {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)
 	    vkGetInstanceProcAddr(
-	        context.instance,
-	        "vkCreateDebugUtilsMessengerEXT");
+	        instance, "vkCreateDebugUtilsMessengerEXT");
 	if (func != nullptr)
 	{
-		return func(context.instance, pCreateInfo,
-		            pAllocator, &context.debugMessenger);
+		return func(instance, pCreateInfo, pAllocator,
+		            &debugMessenger);
 	}
 	else
 	{
@@ -40,17 +40,18 @@ VkResult VkHelpers::createDebugUtilsMessengerEXT(
 }
 
 void VkHelpers::destroyDebugUtilsMessengerEXT(
-    VkHelpers::VkContext        &context,
+    VkInstance               instance,
+    VkDebugUtilsMessengerEXT debugMessenger,
+
     const VkAllocationCallbacks *pAllocator)
 {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)
-	    vkGetInstanceProcAddr(context.instance,
+	    vkGetInstanceProcAddr(instance,
 	                          "vkDestroyDebugUtilsMes"
 	                          "sengerEXT");
 	if (func != nullptr)
 	{
-		func(context.instance, context.debugMessenger,
-		     pAllocator);
+		func(instance, debugMessenger, pAllocator);
 	}
 }
 }        // namespace App

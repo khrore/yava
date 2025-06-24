@@ -3,12 +3,12 @@
 namespace App
 {
 uint32_t VkHelpers::findMemoryType(
-    VkHelpers::VkContext &context, uint32_t typeFilter,
+    VkPhysicalDevice physicalDevice, uint32_t typeFilter,
     VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
-	vkGetPhysicalDeviceMemoryProperties(
-	    context.physicalDevice, &memProperties);
+	vkGetPhysicalDeviceMemoryProperties(physicalDevice,
+	                                    &memProperties);
 
 	for (uint32_t i = 0; i < memProperties.memoryTypeCount;
 	     i++)
@@ -26,8 +26,8 @@ uint32_t VkHelpers::findMemoryType(
 }
 
 void VkHelpers::createBuffer(
-    VkHelpers::VkContext &context, VkDeviceSize size,
-    VkBufferUsageFlags    usage,
+    VkDevice device, VkPhysicalDevice physicalDevice,
+    VkDeviceSize size, VkBufferUsageFlags usage,
     VkMemoryPropertyFlags properties, VkBuffer &buffer,
     VkDeviceMemory &bufferMemory)
 {
@@ -37,7 +37,7 @@ void VkHelpers::createBuffer(
 	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateBuffer(context.device, &bufferInfo, nullptr,
+	if (vkCreateBuffer(device, &bufferInfo, nullptr,
 	                   &buffer) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -45,7 +45,7 @@ void VkHelpers::createBuffer(
 	}
 
 	VkMemoryRequirements memRequirements;
-	vkGetBufferMemoryRequirements(context.device, buffer,
+	vkGetBufferMemoryRequirements(device, buffer,
 	                              &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{};
@@ -53,25 +53,22 @@ void VkHelpers::createBuffer(
 	    VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize  = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(
-	    context, memRequirements.memoryTypeBits,
+	    physicalDevice, memRequirements.memoryTypeBits,
 	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-	if (vkAllocateMemory(context.device, &allocInfo,
-	                     nullptr,
+	if (vkAllocateMemory(device, &allocInfo, nullptr,
 	                     &bufferMemory) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to allocate buffer memory!");
 	}
 
-	vkBindBufferMemory(context.device, buffer, bufferMemory,
-	                   0);
+	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
 VkCommandBuffer VkHelpers::beginSingleTimeCommands(
-    VkHelpers::VkContext &context,
-    VkCommandPool         commandPool)
+    VkDevice device, VkCommandPool commandPool)
 {
 	// create command buffer
 	VkCommandBufferAllocateInfo allocInfo{};
@@ -82,7 +79,7 @@ VkCommandBuffer VkHelpers::beginSingleTimeCommands(
 	allocInfo.commandBufferCount = 1;
 
 	VkCommandBuffer commandBuffer;
-	vkAllocateCommandBuffers(context.device, &allocInfo,
+	vkAllocateCommandBuffers(device, &allocInfo,
 	                         &commandBuffer);
 
 	// record command buffer
@@ -98,9 +95,9 @@ VkCommandBuffer VkHelpers::beginSingleTimeCommands(
 }
 
 void VkHelpers::endSingleTimeCommands(
-    VkHelpers::VkContext &context,
-    VkCommandBuffer       commandBuffer,
-    VkCommandPool         commandPool)
+    VkDevice device, VkQueue graphicQueue,
+    VkCommandBuffer commandBuffer,
+    VkCommandPool   commandPool)
 {
 	// only containing the copy command
 	vkEndCommandBuffer(commandBuffer);
@@ -110,22 +107,23 @@ void VkHelpers::endSingleTimeCommands(
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers    = &commandBuffer;
 
-	vkQueueSubmit(context.graphicQueue, 1, &submitInfo,
+	vkQueueSubmit(graphicQueue, 1, &submitInfo,
 	              VK_NULL_HANDLE);
-	vkQueueWaitIdle(context.graphicQueue);
+	vkQueueWaitIdle(graphicQueue);
 
-	vkFreeCommandBuffers(context.device, commandPool, 1,
+	vkFreeCommandBuffers(device, commandPool, 1,
 	                     &commandBuffer);
 }
 
-void VkHelpers::copyBuffer(VkHelpers::VkContext &context,
+void VkHelpers::copyBuffer(VkDevice      device,
+                           VkQueue       graphicQueue,
                            VkCommandPool commandPool,
                            VkBuffer      srcBuffer,
                            VkBuffer      dstBuffer,
                            VkDeviceSize  size)
 {
 	VkCommandBuffer commandBuffer =
-	    beginSingleTimeCommands(context, commandPool);
+	    beginSingleTimeCommands(device, commandPool);
 
 	// transferring contents of buffers
 	VkBufferCopy copyRegion{};
@@ -135,18 +133,18 @@ void VkHelpers::copyBuffer(VkHelpers::VkContext &context,
 	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1,
 	                &copyRegion);
 
-	endSingleTimeCommands(context, commandBuffer,
-	                      commandPool);
+	endSingleTimeCommands(device, graphicQueue,
+	                      commandBuffer, commandPool);
 }
 
 void VkHelpers::translationImageLayout(
-    VkHelpers::VkContext &context,
+    VkDevice device, VkQueue graphicQueue,
     VkCommandPool commandPool, VkImage image,
     VkFormat format, VkImageLayout oldLayout,
     VkImageLayout newLayout)
 {
 	VkCommandBuffer commandBuffer =
-	    beginSingleTimeCommands(context, commandPool);
+	    beginSingleTimeCommands(device, commandPool);
 
 	VkImageMemoryBarrier barrier{};
 	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -198,17 +196,17 @@ void VkHelpers::translationImageLayout(
 	                     0, 0, nullptr, 0, nullptr, 1,
 	                     &barrier);
 
-	endSingleTimeCommands(context, commandBuffer,
-	                      commandPool);
+	endSingleTimeCommands(device, graphicQueue,
+	                      commandBuffer, commandPool);
 }
 
 void VkHelpers::copyBufferToImage(
-    VkHelpers::VkContext &context,
+    VkDevice device, VkQueue graphicQueue,
     VkCommandPool commandPool, VkBuffer buffer,
     VkImage image, uint32_t width, uint32_t height)
 {
 	VkCommandBuffer commandBuffer =
-	    beginSingleTimeCommands(context, commandPool);
+	    beginSingleTimeCommands(device, commandPool);
 
 	VkBufferImageCopy region{};
 	region.bufferOffset      = 0;
@@ -228,7 +226,7 @@ void VkHelpers::copyBufferToImage(
 	    commandBuffer, buffer, image,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-	endSingleTimeCommands(context, commandBuffer,
-	                      commandPool);
+	endSingleTimeCommands(device, graphicQueue,
+	                      commandBuffer, commandPool);
 }
 }        // namespace App

@@ -10,17 +10,16 @@
 namespace App
 {
 bool VkHelpers::checkDeviceExtensionSupport(
-    VkHelpers::VkContext &context)
+    VkPhysicalDevice physicalDevice)
 {
 	uint32_t extensionCount;
 	vkEnumerateDeviceExtensionProperties(
-	    context.physicalDevice, nullptr, &extensionCount,
-	    nullptr);
+	    physicalDevice, nullptr, &extensionCount, nullptr);
 
 	std::vector<VkExtensionProperties> avaliableExtensions(
 	    extensionCount);
 	vkEnumerateDeviceExtensionProperties(
-	    context.physicalDevice, nullptr, &extensionCount,
+	    physicalDevice, nullptr, &extensionCount,
 	    avaliableExtensions.data());
 
 	std::set<std::string> requiredExtensions(
@@ -36,25 +35,26 @@ bool VkHelpers::checkDeviceExtensionSupport(
 }
 
 bool VkHelpers::isDeviceSuitable(
-    VkHelpers::VkContext &context)
+    VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 {
-	VkHelpers::QueueFamilyIndices indices =
-	    findQueueFamilies(context);
+	QueueFamilyIndices indices =
+	    findQueueFamilies(physicalDevice, surface);
 
 	bool isExtensionSupported =
-	    checkDeviceExtensionSupport(context);
+	    checkDeviceExtensionSupport(physicalDevice);
+
 	bool isSwapChainAdequate = false;
 	if (isExtensionSupported)
 	{
 		SwapChainSupportDetails swapChainSupport =
-		    querySwapChainSupport(context);
+		    querySwapChainSupport(physicalDevice, surface);
 		isSwapChainAdequate =
 		    !swapChainSupport.formats.empty() &&
 		    !swapChainSupport.presentModes.empty();
 	}
 
 	VkPhysicalDeviceFeatures supportedFeatures;
-	vkGetPhysicalDeviceFeatures(context.physicalDevice,
+	vkGetPhysicalDeviceFeatures(physicalDevice,
 	                            &supportedFeatures);
 
 	return indices.isComplite() && isExtensionSupported &&
@@ -63,38 +63,37 @@ bool VkHelpers::isDeviceSuitable(
 }
 VkHelpers::SwapChainSupportDetails
     VkHelpers::querySwapChainSupport(
-        VkHelpers::VkContext &context)
+        VkPhysicalDevice physicalDevice,
+        VkSurfaceKHR     surface)
 {
 	SwapChainSupportDetails details;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
-	    context.physicalDevice, context.surface,
-	    &details.capabilities);
+	    physicalDevice, surface, &details.capabilities);
 
 	uint32_t formatCount;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(
-	    context.physicalDevice, context.surface,
-	    &formatCount, nullptr);
+	    physicalDevice, surface, &formatCount, nullptr);
 
 	if (formatCount != 0)
 	{
 		details.formats.resize(formatCount);
 		vkGetPhysicalDeviceSurfaceFormatsKHR(
-		    context.physicalDevice, context.surface,
-		    &formatCount, details.formats.data());
+		    physicalDevice, surface, &formatCount,
+		    details.formats.data());
 	}
 
 	uint32_t presentModeCount;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(
-	    context.physicalDevice, context.surface,
-	    &presentModeCount, nullptr);
+	    physicalDevice, surface, &presentModeCount,
+	    nullptr);
 
 	if (presentModeCount != 0)
 	{
 		details.presentModes.resize(presentModeCount);
 		vkGetPhysicalDeviceSurfacePresentModesKHR(
-		    context.physicalDevice, context.surface,
-		    &presentModeCount, details.presentModes.data());
+		    physicalDevice, surface, &presentModeCount,
+		    details.presentModes.data());
 	}
 
 	return details;

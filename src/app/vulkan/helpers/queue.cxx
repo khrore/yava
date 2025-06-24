@@ -5,20 +5,20 @@
 namespace App
 {
 VkHelpers::QueueFamilyIndices VkHelpers::findQueueFamilies(
-    VkHelpers::VkContext &context)
+    VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 {
 	QueueFamilyIndices indices;
 
 	// enumerate queue family
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(
-	    context.physicalDevice, &queueFamilyCount, nullptr);
+	    physicalDevice, &queueFamilyCount, nullptr);
 
 	// store queue family
 	std::vector<VkQueueFamilyProperties> queueFamilis(
 	    queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(
-	    context.physicalDevice, &queueFamilyCount,
+	    physicalDevice, &queueFamilyCount,
 	    queueFamilis.data());
 
 	int32_t queueFamilyIndex = 0;
@@ -26,8 +26,8 @@ VkHelpers::QueueFamilyIndices VkHelpers::findQueueFamilies(
 	{
 		VkBool32 isPresentSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(
-		    context.physicalDevice, queueFamilyIndex,
-		    context.surface, &isPresentSupport);
+		    physicalDevice, queueFamilyIndex, surface,
+		    &isPresentSupport);
 
 		if (isPresentSupport)
 		{

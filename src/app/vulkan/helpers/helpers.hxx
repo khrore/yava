@@ -13,17 +13,6 @@ class VkHelpers
 {
   public:
 	// Structs
-	struct VkContext
-	{
-		VkInstance               instance;
-		VkDebugUtilsMessengerEXT debugMessenger;
-		VkPhysicalDevice         physicalDevice;
-		VkDevice                 device;
-		VkQueue                  graphicQueue;
-		VkQueue                  presentQueue;
-		VkSurfaceKHR             surface;
-	};
-
 	struct ModelViewProjectionMatrix
 	{
 		alignas(16) glm::mat4 model;
@@ -43,43 +32,11 @@ class VkHelpers
 		}
 	};
 
-	struct SwapChainContext
-	{
-		std::vector<VkImage>       images;
-		std::vector<VkImageView>   imageViews;
-		std::vector<VkFramebuffer> framebuffers;
-		VkSwapchainKHR             instance;
-		VkFormat                   imageFormat;
-		VkExtent2D                 extent;
-	};
-
 	struct SwapChainSupportDetails
 	{
 		std::vector<VkSurfaceFormatKHR> formats;
 		std::vector<VkPresentModeKHR>   presentModes;
 		VkSurfaceCapabilitiesKHR        capabilities;
-	};
-
-	struct SemaphoresFences
-	{
-		std::vector<VkSemaphore> imageAvailableSemaphores;
-		std::vector<VkSemaphore> renderFinishedSemaphores;
-		std::vector<VkFence>     inFlightFences;
-	};
-
-	struct ObjectBuffer
-	{
-		std::vector<VkCommandBuffer> commands;
-		std::vector<VkBuffer>        mvps;
-		VkBuffer                     index;
-		VkBuffer                     vertex;
-	};
-
-	struct RenderBuffer
-	{
-		std::vector<VkDescriptorSet> descriptorSets;
-		VkRenderPass                 renderPass;
-		VkPipeline                   graphicPipeline;
 	};
 
 	struct Vertex
@@ -161,79 +118,87 @@ class VkHelpers
 	    VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
 	static VkResult createDebugUtilsMessengerEXT(
-	    VkContext &context,
+	    VkInstance               instance,
+	    VkDebugUtilsMessengerEXT debugMessenger,
 	    const VkDebugUtilsMessengerCreateInfoEXT
 	                                *pCreateInfo,
 	    const VkAllocationCallbacks *pAllocator);
 
 	static void destroyDebugUtilsMessengerEXT(
-	    VkContext                   &context,
+	    VkInstance                   instance,
+	    VkDebugUtilsMessengerEXT     debugMessenger,
 	    const VkAllocationCallbacks *pAllocator);
 
 	// Buffer
-	static void
-	    createBuffer(VkContext &context, VkDeviceSize size,
-	                 VkBufferUsageFlags    usage,
-	                 VkMemoryPropertyFlags properties,
-	                 VkBuffer             &buffer,
-	                 VkDeviceMemory       &bufferMemory);
+	static void createBuffer(
+	    VkDevice device, VkPhysicalDevice physicalDevice,
+	    VkDeviceSize size, VkBufferUsageFlags usage,
+	    VkMemoryPropertyFlags properties, VkBuffer &buffer,
+	    VkDeviceMemory &bufferMemory);
 
-	static void copyBuffer(VkContext    &context,
+	static void copyBuffer(VkDevice      device,
+	                       VkQueue       graphicQueue,
 	                       VkCommandPool commandPool,
 	                       VkBuffer      srcBuffer,
 	                       VkBuffer      dstBuffer,
 	                       VkDeviceSize  size);
 
 	static uint32_t
-	    findMemoryType(VkContext            &context,
+	    findMemoryType(VkPhysicalDevice      physicalDevice,
 	                   uint32_t              typeFilter,
 	                   VkMemoryPropertyFlags properties);
 
 
 	static void
-	    endSingleTimeCommands(VkContext      &context,
+	    endSingleTimeCommands(VkDevice        device,
+	                          VkQueue         graphicQueue,
 	                          VkCommandBuffer commandBuffer,
 	                          VkCommandPool   commandPool);
 
 	static VkCommandBuffer
-	    beginSingleTimeCommands(VkContext    &context,
+	    beginSingleTimeCommands(VkDevice      device,
 	                            VkCommandPool commandPool);
 
 	static void translationImageLayout(
-	    VkContext &context, VkCommandPool commandPool,
-	    VkImage image, VkFormat format,
-	    VkImageLayout oldLayout, VkImageLayout newLayout);
+	    VkDevice device, VkQueue graphicQueue,
+	    VkCommandPool commandPool, VkImage image,
+	    VkFormat format, VkImageLayout oldLayout,
+	    VkImageLayout newLayout);
 
-	static void copyBufferToImage(VkContext    &context,
-	                              VkCommandPool commandPool,
-	                              VkBuffer      buffer,
-	                              VkImage       image,
-	                              uint32_t      width,
-	                              uint32_t      height);
+	static void copyBufferToImage(
+	    VkDevice device, VkQueue graphicQueue,
+	    VkCommandPool commandPool, VkBuffer buffer,
+	    VkImage image, uint32_t width, uint32_t height);
+
 	// Image
 	static void createImage(
-	    VkContext &context, uint32_t width, uint32_t height,
-	    VkFormat format, VkImageTiling tiling,
-	    VkImageUsageFlags     usage,
+	    VkDevice device, VkPhysicalDevice physicalDevice,
+	    uint32_t width, uint32_t height, VkFormat format,
+	    VkImageTiling tiling, VkImageUsageFlags usage,
 	    VkMemoryPropertyFlags properties, VkImage &image,
 	    VkDeviceMemory &imageMemory);
 
-	static VkImageView createImageView(VkContext &context,
-	                                   VkImage    image,
-	                                   VkFormat   format);
+	static VkImageView createImageView(VkDevice device,
+	                                   VkImage  image,
+	                                   VkFormat format);
 
 	// Swap Chain
 
-	static bool
-	    checkDeviceExtensionSupport(VkContext &context);
+	static bool checkDeviceExtensionSupport(
+	    VkPhysicalDevice physicalDevice);
 
-	static bool isDeviceSuitable(VkContext &context);
+	static bool
+	    isDeviceSuitable(VkPhysicalDevice physicalDevice,
+	                     VkSurfaceKHR     surface);
 
 	static QueueFamilyIndices
-	    findQueueFamilies(VkContext &context);
+	    findQueueFamilies(VkPhysicalDevice physicalDevice,
+	                      VkSurfaceKHR     surface);
 
-	static SwapChainSupportDetails
-	    querySwapChainSupport(VkContext &context);
+	VkHelpers::SwapChainSupportDetails
+	    querySwapChainSupport(
+	        VkPhysicalDevice physicalDevice,
+	        VkSurfaceKHR     surface);
 
 	static VkSurfaceFormatKHR chooseSwapSurfaceFormat(
 	    const std::vector<VkSurfaceFormatKHR>

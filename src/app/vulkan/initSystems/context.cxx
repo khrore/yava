@@ -1,6 +1,9 @@
 #include "app/vulkan/vulkan.hxx"
 
+#include "app/vulkan/settings/extensions.hxx"
 #include "app/vulkan/settings/validation.hxx"
+
+#include <set>
 
 namespace App
 {
@@ -48,8 +51,8 @@ void Vulkan::destroyDebugMessager()
 
 void Vulkan::createLogicalDevice()
 {
-	QueueFamilyIndices indices =
-	    findQueueFamilies(physicalDevice, surface);
+	VkHelpers::QueueFamilyIndices indices =
+	    VkHelpers::findQueueFamilies(vkContext);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreatesInfos;
 	std::set<uint32_t> uniqueQueueFamilis = {
@@ -96,28 +99,31 @@ void Vulkan::createLogicalDevice()
 		createInfo.enabledLayerCount = 0;
 	}
 
-	if (vkCreateDevice(physicalDevice, &createInfo, nullptr,
-	                   &device) != VK_SUCCESS)
+	if (vkCreateDevice(vkContext.physicalDevice,
+	                   &createInfo, nullptr,
+	                   &vkContext.device) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to create logical device!");
 	}
 
-	vkGetDeviceQueue(device, indices.graphicsFamily.value(),
-	                 0, &graphicQueue);
+	vkGetDeviceQueue(vkContext.device,
+	                 indices.graphicsFamily.value(), 0,
+	                 &vkContext.graphicQueue);
 
-	vkGetDeviceQueue(device, indices.presentFamily.value(),
-	                 0, &presentQueue);
+	vkGetDeviceQueue(vkContext.device,
+	                 indices.presentFamily.value(), 0,
+	                 &vkContext.presentQueue);
 }
 
 void Vulkan::pickPhysicalDevice()
 {
-	physicalDevice = VK_NULL_HANDLE;
+	vkContext.physicalDevice = VK_NULL_HANDLE;
 
 	// enumerate devices
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount,
-	                           nullptr);
+	vkEnumeratePhysicalDevices(vkContext.instance,
+	                           &deviceCount, nullptr);
 	if (deviceCount == 0)
 	{
 		throw std::runtime_error(
@@ -127,17 +133,17 @@ void Vulkan::pickPhysicalDevice()
 
 	// store enumerated devices
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(instance, &deviceCount,
-	                           devices.data());
+	vkEnumeratePhysicalDevices(
+	    vkContext.instance, &deviceCount, devices.data());
 	for (const auto &device : devices)
 	{
-		if (isDeviceSuitable(device, surface))
+		if (VkHelpers::isDeviceSuitable())
 		{
-			physicalDevice = device;
+			vkContext.physicalDevice = device;
 			break;
 		}
 	}
-	if (physicalDevice == VK_NULL_HANDLE)
+	if (vkContext.physicalDevice == VK_NULL_HANDLE)
 	{
 		throw std::runtime_error(
 		    "failed to find a suitable GPU!");
@@ -146,6 +152,6 @@ void Vulkan::pickPhysicalDevice()
 
 void Vulkan::destroyDevice()
 {
-	vkDestroyDevice(device, nullptr);
+	vkDestroyDevice(vkContext.device, nullptr);
 }
 }        // namespace App
