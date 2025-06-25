@@ -120,15 +120,15 @@ void Vulkan::createGraphicsPipline()
 	VkViewport viewport{};
 	viewport.x     = 0.0f;
 	viewport.y     = 0.0f;
-	viewport.width = (float) swapChainContext.extent.width;
+	viewport.width = (float) swapChain.extent.width;
 	viewport.height =
-	    (float) swapChainContext.extent.height;
+	    (float) swapChain.extent.height;
 	viewport.maxDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor{};
 	scissor.offset = {0, 0};
-	scissor.extent = swapChainContext.extent;
+	scissor.extent = swapChain.extent;
 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType =

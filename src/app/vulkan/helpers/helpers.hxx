@@ -39,6 +39,27 @@ class VkHelpers
 		VkSurfaceCapabilitiesKHR        capabilities;
 	};
 
+	struct VkContext
+	{
+		VkInstance               instance;
+		VkDebugUtilsMessengerEXT debugMessenger;
+		VkPhysicalDevice         physicalDevice;
+		VkDevice                 device;
+		VkQueue                  graphicQueue;
+		VkQueue                  presentQueue;
+		VkSurfaceKHR             surface;
+	};
+
+	struct SwapChainContext
+	{
+		std::vector<VkImage>       images;
+		std::vector<VkImageView>   imageViews;
+		std::vector<VkFramebuffer> framebuffers;
+		VkSwapchainKHR             instance;
+		VkFormat                   imageFormat;
+		VkExtent2D                 extent;
+	};
+
 	struct Vertex
 	{
 		glm::vec3 pos;
@@ -195,10 +216,9 @@ class VkHelpers
 	    findQueueFamilies(VkPhysicalDevice physicalDevice,
 	                      VkSurfaceKHR     surface);
 
-	VkHelpers::SwapChainSupportDetails
-	    querySwapChainSupport(
-	        VkPhysicalDevice physicalDevice,
-	        VkSurfaceKHR     surface);
+	static SwapChainSupportDetails querySwapChainSupport(
+	    VkPhysicalDevice physicalDevice,
+	    VkSurfaceKHR     surface);
 
 	static VkSurfaceFormatKHR chooseSwapSurfaceFormat(
 	    const std::vector<VkSurfaceFormatKHR>

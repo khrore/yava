@@ -32,7 +32,8 @@ void Vulkan::setupDebugMessenger()
 	    createInfo);
 
 	if (VkHelpers::createDebugUtilsMessengerEXT(
-	        vkContext, &createInfo, nullptr) != VK_SUCCESS)
+	        vkContext.instance, vkContext.debugMessenger,
+	        &createInfo, nullptr) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to set up debug messenger!");
@@ -44,15 +45,17 @@ void Vulkan::destroyDebugMessager()
 {
 	if (Settings::isEnableValidationLayers)
 	{
-		VkHelpers::destroyDebugUtilsMessengerEXT(vkContext,
-		                                         nullptr);
+		VkHelpers::destroyDebugUtilsMessengerEXT(
+		    vkContext.instance, vkContext.debugMessenger,
+		    nullptr);
 	}
 }
 
 void Vulkan::createLogicalDevice()
 {
 	VkHelpers::QueueFamilyIndices indices =
-	    VkHelpers::findQueueFamilies(vkContext);
+	    VkHelpers::findQueueFamilies(
+	        vkContext.physicalDevice, vkContext.surface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreatesInfos;
 	std::set<uint32_t> uniqueQueueFamilis = {
@@ -132,14 +135,17 @@ void Vulkan::pickPhysicalDevice()
 	}
 
 	// store enumerated devices
-	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(
-	    vkContext.instance, &deviceCount, devices.data());
-	for (const auto &device : devices)
+	std::vector<VkPhysicalDevice> physicalDevices(
+	    deviceCount);
+	vkEnumeratePhysicalDevices(vkContext.instance,
+	                           &deviceCount,
+	                           physicalDevices.data());
+	for (const auto &physicalDevice : physicalDevices)
 	{
-		if (VkHelpers::isDeviceSuitable())
+		if (VkHelpers::isDeviceSuitable(physicalDevice,
+		                                vkContext.surface))
 		{
-			vkContext.physicalDevice = device;
+			vkContext.physicalDevice = physicalDevice;
 			break;
 		}
 	}

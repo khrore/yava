@@ -10,8 +10,8 @@ void Vulkan::createVertexBuffer()
 	VkBuffer       stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	VkHelpers::createBuffer(
-	    vkContext, bufferSize,
-	    VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	    vkContext.device, vkContext.physicalDevice,
+	    bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 	    stagingBuffer, stagingBufferMemory);
@@ -24,15 +24,17 @@ void Vulkan::createVertexBuffer()
 	vkUnmapMemory(vkContext.device, stagingBufferMemory);
 
 	VkHelpers::createBuffer(
-	    vkContext, bufferSize,
+	    vkContext.device, vkContext.physicalDevice,
+	    bufferSize,
 	    VK_BUFFER_USAGE_TRANSFER_DST_BIT |
 	        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 	    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer,
 	    vertexBufferMemory);
 
-	VkHelpers::copyBuffer(vkContext, commandPool,
-	                      stagingBuffer, vertexBuffer,
-	                      bufferSize);
+	VkHelpers::copyBuffer(vkContext.device,
+	                      vkContext.graphicQueue,
+	                      commandPool, stagingBuffer,
+	                      vertexBuffer, bufferSize);
 
 	vkDestroyBuffer(vkContext.device, stagingBuffer,
 	                nullptr);
@@ -56,8 +58,8 @@ void Vulkan::createIndexBuffer()
 	VkBuffer       stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	VkHelpers::createBuffer(
-	    vkContext, bufferSize,
-	    VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	    vkContext.device, vkContext.physicalDevice,
+	    bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 	    stagingBuffer, stagingBufferMemory);
@@ -70,15 +72,17 @@ void Vulkan::createIndexBuffer()
 	vkUnmapMemory(vkContext.device, stagingBufferMemory);
 
 	VkHelpers::createBuffer(
-	    vkContext, bufferSize,
+	    vkContext.device, vkContext.physicalDevice,
+	    bufferSize,
 	    VK_BUFFER_USAGE_TRANSFER_DST_BIT |
 	        VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 	    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer,
 	    indexBufferMemory);
 
-	VkHelpers::copyBuffer(vkContext, commandPool,
-	                      stagingBuffer, indexBuffer,
-	                      bufferSize);
+	VkHelpers::copyBuffer(vkContext.device,
+	                      vkContext.graphicQueue,
+	                      commandPool, stagingBuffer,
+	                      indexBuffer, bufferSize);
 
 	vkDestroyBuffer(vkContext.device, stagingBuffer,
 	                nullptr);

@@ -21,7 +21,8 @@ void Vulkan::createModelViewProjectionMatrix()
 	     i++)
 	{
 		VkHelpers::createBuffer(
-		    vkContext, mvpBufferSize,
+		    vkContext.device, vkContext.physicalDevice,
+		    mvpBufferSize,
 		    VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 		    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 		        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -55,8 +56,8 @@ void Vulkan::updateModelViewProjectionMatrix(
 	                        glm::vec3(0.0f, 0.0f, 1.0f));
 	mvp.proj  = glm::perspective(
         glm::radians(45.0f),
-        swapChainContext.extent.width /
-            (float) swapChainContext.extent.height,
+        swapChain.extent.width /
+            (float) swapChain.extent.height,
         0.1f, 10.0f);
 
 	// flip Y, because glm originaly designed for OpenGL

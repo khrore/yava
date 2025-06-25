@@ -40,9 +40,8 @@ VkResult VkHelpers::createDebugUtilsMessengerEXT(
 }
 
 void VkHelpers::destroyDebugUtilsMessengerEXT(
-    VkInstance               instance,
-    VkDebugUtilsMessengerEXT debugMessenger,
-
+    VkInstance                   instance,
+    VkDebugUtilsMessengerEXT     debugMessenger,
     const VkAllocationCallbacks *pAllocator)
 {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)

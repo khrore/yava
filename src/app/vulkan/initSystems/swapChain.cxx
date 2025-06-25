@@ -7,7 +7,8 @@ namespace App
 void Vulkan::createSwapChain()
 {
 	VkHelpers::SwapChainSupportDetails swapChainSupport =
-	    VkHelpers::querySwapChainSupport(vkContext);
+	    VkHelpers::querySwapChainSupport(
+	        vkContext.physicalDevice, vkContext.surface);
 
 	VkSurfaceFormatKHR surfaceFormat =
 	    VkHelpers::chooseSwapSurfaceFormat(
@@ -41,7 +42,8 @@ void Vulkan::createSwapChain()
 	    VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
 	VkHelpers::QueueFamilyIndices indices =
-	    VkHelpers::findQueueFamilies(vkContext);
+	    VkHelpers::findQueueFamilies(
+	        vkContext.physicalDevice, vkContext.surface);
 	uint32_t queueFamilyIndices[] = {
 	    indices.graphicsFamily.value(),
 	    indices.presentFamily.value()};
@@ -69,22 +71,22 @@ void Vulkan::createSwapChain()
 	createInfo.clipped     = VK_TRUE;
 	if (vkCreateSwapchainKHR(
 	        vkContext.device, &createInfo, nullptr,
-	        &swapChainContext.instance) != VK_SUCCESS)
+	        &swapChain.instance) != VK_SUCCESS)
 	{
 		std::runtime_error("failed to create swap chain!");
 	}
 
 	vkGetSwapchainImagesKHR(vkContext.device,
-	                        swapChainContext.instance,
-	                        &imageCount, nullptr);
-	swapChainContext.images.resize(imageCount);
+	                        swapChain.instance, &imageCount,
+	                        nullptr);
+	swapChain.images.resize(imageCount);
 
-	vkGetSwapchainImagesKHR(
-	    vkContext.device, swapChainContext.instance,
-	    &imageCount, swapChainContext.images.data());
+	vkGetSwapchainImagesKHR(vkContext.device,
+	                        swapChain.instance, &imageCount,
+	                        swapChain.images.data());
 
-	swapChainContext.imageFormat = surfaceFormat.format;
-	swapChainContext.extent      = extent;
+	swapChain.imageFormat = surfaceFormat.format;
+	swapChain.extent      = extent;
 }
 
 void Vulkan::cleanupSwapChain()
@@ -117,27 +119,24 @@ void Vulkan::recreateSwapChain()
 void Vulkan::destroySwapChain()
 {
 	vkDestroySwapchainKHR(vkContext.device,
-	                      swapChainContext.instance,
-	                      nullptr);
+	                      swapChain.instance, nullptr);
 }
 
 void Vulkan::createImageViews()
 {
-	swapChainContext.imageViews.resize(
-	    swapChainContext.images.size());
-	for (size_t i = 0; i < swapChainContext.images.size();
-	     i++)
+	swapChain.imageViews.resize(swapChain.images.size());
+	for (size_t i = 0; i < swapChain.images.size(); i++)
 	{
-		swapChainContext.imageViews[i] =
+		swapChain.imageViews[i] =
 		    VkHelpers::createImageView(
-		        vkContext, swapChainContext.images[i],
-		        swapChainContext.imageFormat);
+		        vkContext.device, swapChain.images[i],
+		        swapChain.imageFormat);
 	}
 }
 
 void Vulkan::destoryImageViews()
 {
-	for (auto imageView : swapChainContext.imageViews)
+	for (auto imageView : swapChain.imageViews)
 	{
 		vkDestroyImageView(vkContext.device, imageView,
 		                   nullptr);
@@ -146,14 +145,13 @@ void Vulkan::destoryImageViews()
 
 void Vulkan::createFramebuffer()
 {
-	swapChainContext.framebuffers.resize(
-	    swapChainContext.imageViews.size());
+	swapChain.framebuffers.resize(
+	    swapChain.imageViews.size());
 
-	for (size_t i = 0;
-	     i < swapChainContext.imageViews.size(); i++)
+	for (size_t i = 0; i < swapChain.imageViews.size(); i++)
 	{
 		VkImageView attachments[] = {
-		    swapChainContext.imageViews[i]};
+		    swapChain.imageViews[i]};
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType =
@@ -161,16 +159,13 @@ void Vulkan::createFramebuffer()
 		framebufferInfo.renderPass      = renderPass;
 		framebufferInfo.attachmentCount = 1;
 		framebufferInfo.pAttachments    = attachments;
-		framebufferInfo.width =
-		    swapChainContext.extent.width;
-		framebufferInfo.height =
-		    swapChainContext.extent.height;
+		framebufferInfo.width  = swapChain.extent.width;
+		framebufferInfo.height = swapChain.extent.height;
 		framebufferInfo.layers = 1;
 
 		if (vkCreateFramebuffer(
 		        vkContext.device, &framebufferInfo, nullptr,
-		        &swapChainContext.framebuffers[i]) !=
-		    VK_SUCCESS)
+		        &swapChain.framebuffers[i]) != VK_SUCCESS)
 		{
 			throw std::runtime_error(
 			    "failed to create framebuffer!");
@@ -180,7 +175,7 @@ void Vulkan::createFramebuffer()
 
 void Vulkan::destroyFramebuffer()
 {
-	for (auto framebuffer : swapChainContext.framebuffers)
+	for (auto framebuffer : swapChain.framebuffers)
 	{
 		vkDestroyFramebuffer(vkContext.device, framebuffer,
 		                     nullptr);

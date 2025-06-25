@@ -83,20 +83,8 @@ class Vulkan
   private:
 	Window *window;
 
-	VkInstance               instance;
-	VkDebugUtilsMessengerEXT debugMessenger;
-	VkPhysicalDevice         physicalDevice;
-	VkDevice                 device;
-	VkQueue                  graphicQueue;
-	VkQueue                  presentQueue;
-	VkSurfaceKHR             surface;
-
-	std::vector<VkImage>       swapChainImages;
-	std::vector<VkImageView>   swapChainImageViews;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-	VkSwapchainKHR             swapChain;
-	VkFormat                   swapChainImageFormat;
-	VkExtent2D                 swapChainExtent;
+	VkHelpers::VkContext        vkContext;
+	VkHelpers::SwapChainContext swapChain;
 
 	VkRenderPass                 renderPass;
 	VkDescriptorSetLayout        descriptorSetLayout;

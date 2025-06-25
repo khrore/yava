@@ -26,10 +26,9 @@ void Vulkan::recordCommandBuffer(
 	    VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassInfo.renderPass = renderPass;
 	renderPassInfo.framebuffer =
-	    swapChainContext.framebuffers[imageIndex];
+	    swapChain.framebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = {0, 0};
-	renderPassInfo.renderArea.extent =
-	    swapChainContext.extent;
+	renderPassInfo.renderArea.extent = swapChain.extent;
 
 	VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
 	renderPassInfo.clearValueCount = 1;
@@ -53,16 +52,16 @@ void Vulkan::recordCommandBuffer(
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
 	viewport.width =
-	    static_cast<float>(swapChainContext.extent.width);
+	    static_cast<float>(swapChain.extent.width);
 	viewport.height =
-	    static_cast<float>(swapChainContext.extent.height);
+	    static_cast<float>(swapChain.extent.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = {0, 0};
-	scissor.extent = swapChainContext.extent;
+	scissor.extent = swapChain.extent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 	vkCmdBindDescriptorSets(
@@ -104,7 +103,8 @@ void Vulkan::createCommandBuffer()
 void Vulkan::createCommandPool()
 {
 	VkHelpers::QueueFamilyIndices queueFamilyIndices =
-	    VkHelpers::findQueueFamilies(vkContext);
+	    VkHelpers::findQueueFamilies(
+	        vkContext.physicalDevice, vkContext.surface);
 
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType =
