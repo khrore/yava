@@ -199,9 +199,10 @@ class VkHelpers
 	    VkMemoryPropertyFlags properties, VkImage &image,
 	    VkDeviceMemory &imageMemory);
 
-	static VkImageView createImageView(VkDevice device,
-	                                   VkImage  image,
-	                                   VkFormat format);
+	static VkImageView
+	    createImageView(VkDevice device, VkImage image,
+	                    VkFormat           format,
+	                    VkImageAspectFlags aspectFlags);
 
 	// Swap Chain
 
@@ -231,5 +232,16 @@ class VkHelpers
 	static VkExtent2D chooseSwapExtent(
 	    const VkSurfaceCapabilitiesKHR &capabilities,
 	    GLFWwindow                     *window);
+
+	static VkFormat findSupportedFormat(
+	    VkPhysicalDevice             physicalDevice,
+	    const std::vector<VkFormat> &candidates,
+	    VkImageTiling                tiling,
+	    VkFormatFeatureFlags         features);
+
+	static VkFormat
+	    findDepthFormat(VkPhysicalDevice physicalDevice);
+
+	static bool hasStancilComponent(VkFormat format);
 };
 }        // namespace App

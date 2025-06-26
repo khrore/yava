@@ -55,9 +55,9 @@ void VkHelpers::createImage(
 	vkBindImageMemory(device, image, imageMemory, 0);
 }
 
-VkImageView VkHelpers::createImageView(VkDevice device,
-                                       VkImage  image,
-                                       VkFormat format)
+VkImageView VkHelpers::createImageView(
+    VkDevice device, VkImage image, VkFormat format,
+    VkImageAspectFlags aspectFlags)
 {
 	VkImageViewCreateInfo viewInfo{};
 	viewInfo.sType =
@@ -65,8 +65,7 @@ VkImageView VkHelpers::createImageView(VkDevice device,
 	viewInfo.image    = image;
 	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 	viewInfo.format   = format;
-	viewInfo.subresourceRange.aspectMask =
-	    VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.aspectMask     = aspectFlags;
 	viewInfo.subresourceRange.baseMipLevel   = 0;
 	viewInfo.subresourceRange.levelCount     = 1;
 	viewInfo.subresourceRange.baseArrayLayer = 0;

@@ -130,7 +130,8 @@ void Vulkan::createImageViews()
 		swapChain.imageViews[i] =
 		    VkHelpers::createImageView(
 		        vkContext.device, swapChain.images[i],
-		        swapChain.imageFormat);
+		        swapChain.imageFormat,
+		        VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
 

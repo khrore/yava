@@ -26,61 +26,69 @@ void Vulkan::createTextureImage()
 	VkDeviceMemory stagingBufferMemory;
 
 	VkHelpers::createBuffer(
-	    vkContext.device, vkContext.physicalDevice, imageSize,
-	    VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	    vkContext.device, vkContext.physicalDevice,
+	    imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 	    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 	        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 	    stagingBuffer, stagingBufferMemory);
 
 	void *data;
-	vkMapMemory(vkContext.device, stagingBufferMemory, 0, imageSize,
-	            0, &data);
+	vkMapMemory(vkContext.device, stagingBufferMemory, 0,
+	            imageSize, 0, &data);
 	memcpy(data, pixels, static_cast<size_t>(imageSize));
 	vkUnmapMemory(vkContext.device, stagingBufferMemory);
 	stbi_image_free(pixels);
 
 	VkHelpers::createImage(
-	    vkContext.device, vkContext.physicalDevice, texWidth, texHeight,
-	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+	    vkContext.device, vkContext.physicalDevice,
+	    texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB,
+	    VK_IMAGE_TILING_OPTIMAL,
 	    VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 	        VK_IMAGE_USAGE_SAMPLED_BIT,
 	    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage,
 	    textureImageMemory);
 
 	VkHelpers::translationImageLayout(
-	    vkContext.device, vkContext.graphicQueue, commandPool, textureImage,
-	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
+	    vkContext.device, vkContext.graphicQueue,
+	    commandPool, textureImage, VK_FORMAT_R8G8B8A8_SRGB,
+	    VK_IMAGE_LAYOUT_UNDEFINED,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	VkHelpers::copyBufferToImage(
-	    vkContext.device, vkContext.graphicQueue, commandPool, stagingBuffer,
-	    textureImage, static_cast<uint32_t>(texWidth),
+	    vkContext.device, vkContext.graphicQueue,
+	    commandPool, stagingBuffer, textureImage,
+	    static_cast<uint32_t>(texWidth),
 	    static_cast<uint32_t>(texHeight));
 
 	VkHelpers::translationImageLayout(
-	    vkContext.device, vkContext.graphicQueue, commandPool, textureImage,
-	    VK_FORMAT_R8G8B8A8_SRGB,
+	    vkContext.device, vkContext.graphicQueue,
+	    commandPool, textureImage, VK_FORMAT_R8G8B8A8_SRGB,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 	    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	vkDestroyBuffer(vkContext.device, stagingBuffer, nullptr);
-	vkFreeMemory(vkContext.device, stagingBufferMemory, nullptr);
+	vkDestroyBuffer(vkContext.device, stagingBuffer,
+	                nullptr);
+	vkFreeMemory(vkContext.device, stagingBufferMemory,
+	             nullptr);
 }
 
 void Vulkan::destroyTextureImage()
 {
 	vkDestroyImage(vkContext.device, textureImage, nullptr);
-	vkFreeMemory(vkContext.device, textureImageMemory, nullptr);
+	vkFreeMemory(vkContext.device, textureImageMemory,
+	             nullptr);
 }
 
 void Vulkan::createTextureImageView()
 {
 	textureImageView = VkHelpers::createImageView(
-	    vkContext.device, textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+	    vkContext.device, textureImage,
+	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void Vulkan::destroyTextureImageView()
 {
-	vkDestroyImageView(vkContext.device, textureImageView, nullptr);
+	vkDestroyImageView(vkContext.device, textureImageView,
+	                   nullptr);
 }
 
 void Vulkan::createTextureSampler()
@@ -115,7 +123,8 @@ void Vulkan::createTextureSampler()
 	samplerInfo.minLod     = 0.0f;
 	samplerInfo.maxLod     = 0.0f;
 
-	if (vkCreateSampler(vkContext.device, &samplerInfo, nullptr,
+	if (vkCreateSampler(vkContext.device, &samplerInfo,
+	                    nullptr,
 	                    &textureSampler) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
@@ -125,6 +134,7 @@ void Vulkan::createTextureSampler()
 
 void Vulkan::destroyTextureSampler()
 {
-	vkDestroySampler(vkContext.device, textureSampler, nullptr);
+	vkDestroySampler(vkContext.device, textureSampler,
+	                 nullptr);
 }
 }        // namespace App

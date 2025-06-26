@@ -3,7 +3,7 @@
 #include "app/vulkan/settings/frames.hxx"
 
 #define GLM_FORCE_RADIANS 1
-#include <glm/glm.hpp>
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE 1
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace App

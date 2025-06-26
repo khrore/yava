@@ -34,6 +34,8 @@ class Vulkan
 	void createFramebuffer();
 	void createCommandPool();
 
+	void createDepthResources();
+
 	void createTextureImage();
 	void createTextureImageView();
 	void createTextureSampler();
@@ -143,5 +145,9 @@ class Vulkan
 	VkDeviceMemory textureImageMemory;
 	VkImageView    textureImageView;
 	VkSampler      textureSampler;
+
+	VkImage        depthImage;
+	VkDeviceMemory depthImageMemory;
+	VkImageView    depthImageView;
 };
 }        // namespace App
