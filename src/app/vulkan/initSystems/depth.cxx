@@ -18,5 +18,11 @@ void Vulkan::createDepthResources()
 	depthImageView = VkHelpers::createImageView(
 	    vkContext.device, depthImage, depthFormat,
 	    VK_IMAGE_ASPECT_DEPTH_BIT);
+
+	VkHelpers::translationImageLayout(
+	    vkContext.device, vkContext.graphicQueue,
+	    commandPool, depthImage, depthFormat,
+	    VK_IMAGE_LAYOUT_UNDEFINED,
+	    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 }        // namespace App
