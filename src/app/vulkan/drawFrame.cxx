@@ -1,7 +1,6 @@
 #include "vulkan.hxx"
 
 #include "settings/frames.hxx"
-#include <debugapi.h>
 
 namespace App
 {

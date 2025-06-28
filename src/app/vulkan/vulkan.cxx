@@ -33,8 +33,6 @@ Vulkan::Vulkan(Window &window)
 	createIndexBuffer();
 	createModelViewProjectionMatrix();
 
-    std::cout << "loaded!";
-
 	createDescriptorPool();
 	createDescriptorSets();
 	createCommandBuffer();

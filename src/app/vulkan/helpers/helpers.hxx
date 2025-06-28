@@ -1,8 +1,12 @@
 #include <vulkan/vulkan.h>
 
+#include <functional>
 #include <iostream>
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
+#include <glm/gtx/hash.hpp>
+
 
 #define GLFW_INCLUDE_VULKAN 1
 #include <GLFW/glfw3.h>
@@ -41,12 +45,12 @@ class VkHelpers
 
 	struct VkContext
 	{
-		VkInstance               instance;
-		VkPhysicalDevice         physicalDevice;
-		VkDevice                 device;
-		VkQueue                  graphicQueue;
-		VkQueue                  presentQueue;
-		VkSurfaceKHR             surface;
+		VkInstance       instance;
+		VkPhysicalDevice physicalDevice;
+		VkDevice         device;
+		VkQueue          graphicQueue;
+		VkQueue          presentQueue;
+		VkSurfaceKHR     surface;
 	};
 
 	struct SwapChainContext
@@ -107,6 +111,14 @@ class VkHelpers
 			    offsetof(Vertex, texCoord);
 
 			return attributeDescriptions;
+		}
+
+		bool operator==(
+		    const App::VkHelpers::Vertex &other) const
+		{
+			return pos == other.pos &&
+			       color == other.color &&
+			       texCoord == other.texCoord;
 		}
 	};
 
@@ -244,3 +256,18 @@ class VkHelpers
 	static bool hasStancilComponent(VkFormat format);
 };
 }        // namespace App
+
+namespace std
+{
+template <>
+struct hash<App::VkHelpers::Vertex>
+{
+	size_t operator()(
+	    App::VkHelpers::Vertex const &vertex) const
+	{
+		return (hash<glm::vec3>()(vertex.pos) ^
+		        (hash<glm::vec3>()(vertex.color) << 1)) ^
+		       (hash<glm::vec2>()(vertex.texCoord) << 1);
+	}
+};
+}        // namespace std
