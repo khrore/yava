@@ -120,8 +120,6 @@ void VkHelpers::translationImageLayout(
 		    VK_IMAGE_ASPECT_COLOR_BIT;
 	}
 
-	barrier.subresourceRange.aspectMask =
-	    VK_IMAGE_ASPECT_COLOR_BIT;
 	barrier.subresourceRange.baseMipLevel   = 0;
 	barrier.subresourceRange.levelCount     = 1;
 	barrier.subresourceRange.baseArrayLayer = 0;

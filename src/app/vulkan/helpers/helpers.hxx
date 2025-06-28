@@ -42,7 +42,6 @@ class VkHelpers
 	struct VkContext
 	{
 		VkInstance               instance;
-		VkDebugUtilsMessengerEXT debugMessenger;
 		VkPhysicalDevice         physicalDevice;
 		VkDevice                 device;
 		VkQueue                  graphicQueue;

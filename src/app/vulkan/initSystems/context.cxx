@@ -32,8 +32,8 @@ void Vulkan::setupDebugMessenger()
 	    createInfo);
 
 	if (VkHelpers::createDebugUtilsMessengerEXT(
-	        vkContext.instance, vkContext.debugMessenger,
-	        &createInfo, nullptr) != VK_SUCCESS)
+	        vkContext.instance, debugMessenger, &createInfo,
+	        nullptr) != VK_SUCCESS)
 	{
 		throw std::runtime_error(
 		    "failed to set up debug messenger!");
@@ -45,9 +45,10 @@ void Vulkan::destroyDebugMessager()
 {
 	if (Settings::isEnableValidationLayers)
 	{
+		// vkDestroyDebugUtilsMessengerEXT(
+		//     vkContext.instance, debugMessenger, nullptr);
 		VkHelpers::destroyDebugUtilsMessengerEXT(
-		    vkContext.instance, vkContext.debugMessenger,
-		    nullptr);
+		    vkContext.instance, debugMessenger, nullptr);
 	}
 }
 

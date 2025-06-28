@@ -135,6 +135,6 @@ void Vulkan::initInstance()
 
 void Vulkan::destroyInstance()
 {
-	vkDestroyInstance(vkContext.instance, nullptr);
+	// vkDestroyInstance(vkContext.instance, nullptr);
 }
 }        // namespace App

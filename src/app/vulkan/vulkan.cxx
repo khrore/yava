@@ -27,9 +27,13 @@ Vulkan::Vulkan(Window &window)
 	createTextureImageView();
 	createTextureSampler();
 
+	loadModel();
+
 	createVertexBuffer();
 	createIndexBuffer();
 	createModelViewProjectionMatrix();
+
+    std::cout << "loaded!";
 
 	createDescriptorPool();
 	createDescriptorSets();
@@ -42,9 +46,7 @@ Vulkan::~Vulkan()
 	cleanupSwapChain();
 
 	destroyDescriptorPool();
-	destrpyDescriptorSetLayout();
 	destroySyncObjects();
-	destroyCommandPool();
 
 	destroyModelViewProjectionMatrix();
 	destroyIndexBuffer();
@@ -57,8 +59,11 @@ Vulkan::~Vulkan()
 	destroyGraphicsPipline();
 	destroyRenderPass();
 
+	destrpyDescriptorSetLayout();
+	destroyCommandPool();
 	destroyDevice();
-	destroyDebugMessager();
+	// TODO: vkDestroyDebugUtilsMessengerEXT undefined by
+	// build destroyDebugMessager();
 	destroySurface();
 	destroyInstance();
 }

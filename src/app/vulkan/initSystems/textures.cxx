@@ -1,5 +1,7 @@
 #include "app/vulkan/vulkan.hxx"
 
+#include "app/vulkan/settings/model.hxx"
+
 #include <cstring>
 #include <stdexcept>
 
@@ -11,9 +13,9 @@ namespace App
 void Vulkan::createTextureImage()
 {
 	int      texWidth, texHeight, texChannels;
-	stbi_uc *pixels =
-	    stbi_load("assets/textures/c.jpg", &texWidth,
-	              &texHeight, &texChannels, STBI_rgb_alpha);
+	stbi_uc *pixels = stbi_load(
+	    Settings::TEX_MODEL_PATH.c_str(), &texWidth,
+	    &texHeight, &texChannels, STBI_rgb_alpha);
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
 
 	if (!pixels)

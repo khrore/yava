@@ -50,7 +50,7 @@ void Vulkan::recordCommandBuffer(
 	                       vertexBuffers, offsets);
 
 	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0,
-	                     VK_INDEX_TYPE_UINT16);
+	                     VK_INDEX_TYPE_UINT32);
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;

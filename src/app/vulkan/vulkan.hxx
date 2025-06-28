@@ -40,6 +40,8 @@ class Vulkan
 	void createTextureImageView();
 	void createTextureSampler();
 
+	void loadModel();
+
 	void createVertexBuffer();
 	void createIndexBuffer();
 	void createModelViewProjectionMatrix();
@@ -89,6 +91,7 @@ class Vulkan
 
 	VkHelpers::VkContext        vkContext;
 	VkHelpers::SwapChainContext swapChain;
+	VkDebugUtilsMessengerEXT    debugMessenger;
 
 	VkRenderPass                 renderPass;
 	VkDescriptorSetLayout        descriptorSetLayout;
@@ -105,39 +108,13 @@ class Vulkan
 
 	uint32_t currentFrame = 0;
 
-	const std::vector<VkHelpers::Vertex> vertices = {
-	    {{-0.5f, -0.5f, 0.0f},
-	     {1.0f, 1.0f, 0.0f},
-	     {1.0f, 0.0f}},
-	    {{0.5f, -0.5f, 0.0f},
-	     {1.0f, 0.0f, 0.0f},
-	     {0.0f, 0.0f}},
-	    {{0.5f, 0.5f, 0.0f},
-	     {0.0f, 1.0f, 0.0f},
-	     {0.0f, 1.0f}},
-	    {{-0.5f, 0.5f, 0.0f},
-	     {0.0f, 0.0f, 1.0f},
-	     {1.0f, 1.0f}},
+	std::vector<VkHelpers::Vertex> vertices;
+	VkBuffer                             vertexBuffer;
+	VkDeviceMemory                       vertexBufferMemory;
 
-	    {{-0.5f, -0.5f, -0.5f},
-	     {1.0f, 1.0f, 0.0f},
-	     {1.0f, 0.0f}},
-	    {{0.5f, -0.5f, -0.5f},
-	     {1.0f, 0.0f, 0.0f},
-	     {0.0f, 0.0f}},
-	    {{0.5f, 0.5f, -0.5f},
-	     {0.0f, 1.0f, 0.0f},
-	     {0.0f, 1.0f}},
-	    {{-0.5f, 0.5f, -0.5f},
-	     {0.0f, 0.0f, 1.0f},
-	     {1.0f, 1.0f}}};
-	VkBuffer       vertexBuffer;
-	VkDeviceMemory vertexBufferMemory;
-
-	const std::vector<uint16_t> indices = {
-	    0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4};
-	VkBuffer       indexBuffer;
-	VkDeviceMemory indexBufferMemory;
+	std::vector<uint32_t> indices;
+	VkBuffer                    indexBuffer;
+	VkDeviceMemory              indexBufferMemory;
 
 	std::vector<VkBuffer>       mvpBuffers;
 	std::vector<VkDeviceMemory> mvpBuffersMemory;

@@ -51,10 +51,26 @@ function(copy_textures)
     endforeach()
 endfunction()
 
+
+function(copy_models)
+    message("-- Coping models.")
+
+    file(GLOB_RECURSE MODELS RELATIVE ${CMAKE_CURRENT_BINARY_DIR}/../assets/models/ assets/models/*.*)
+    file(MAKE_DIRECTORY build/assets/models)
+
+    foreach(MODEL ${MODELS})
+        file(COPY_FILE assets/models/${MODEL} build/assets/models/${MODEL})
+    endforeach()
+endfunction()
+
 if (CMPSDR)
     compile_shaders()
 endif()
 
 if (CPTX)
     copy_textures()
+endif()
+
+if (CPMODS)
+    copy_models()
 endif()
