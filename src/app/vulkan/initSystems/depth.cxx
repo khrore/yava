@@ -25,4 +25,13 @@ void Vulkan::createDepthResources()
 	    VK_IMAGE_LAYOUT_UNDEFINED,
 	    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
+
+void Vulkan::destroyDepthResources()
+{
+	vkDestroyImageView(vkContext.device, depthImageView,
+	                   nullptr);
+	vkDestroyImage(vkContext.device, depthImage, nullptr);
+	vkFreeMemory(vkContext.device, depthImageMemory,
+	             nullptr);
+}
 }        // namespace App

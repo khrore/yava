@@ -118,11 +118,10 @@ void Vulkan::createGraphicsPipline()
 
 	//
 	VkViewport viewport{};
-	viewport.x     = 0.0f;
-	viewport.y     = 0.0f;
-	viewport.width = (float) swapChain.extent.width;
-	viewport.height =
-	    (float) swapChain.extent.height;
+	viewport.x        = 0.0f;
+	viewport.y        = 0.0f;
+	viewport.width    = (float) swapChain.extent.width;
+	viewport.height   = (float) swapChain.extent.height;
 	viewport.maxDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
@@ -209,6 +208,20 @@ void Vulkan::createGraphicsPipline()
 	colorBlending.blendConstants[3] =
 	    0.0f;        // optional
 
+	VkPipelineDepthStencilStateCreateInfo depthStencil{};
+	depthStencil.sType =
+	    VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	depthStencil.depthTestEnable  = VK_TRUE;
+	depthStencil.depthWriteEnable = VK_TRUE;
+	depthStencil.depthCompareOp   = VK_COMPARE_OP_LESS;
+
+	depthStencil.depthBoundsTestEnable = VK_FALSE;
+	depthStencil.minDepthBounds = 0.0f;        // optional
+	depthStencil.maxDepthBounds = 0.0f;        // optional
+	depthStencil.stencilTestEnable = VK_FALSE;
+	depthStencil.front             = {};        // optional
+	depthStencil.back              = {};        // optional
+
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType =
 	    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -237,10 +250,9 @@ void Vulkan::createGraphicsPipline()
 	pipelineInfo.pViewportState      = &viewportState;
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState   = &multisampling;
-	pipelineInfo.pDepthStencilState =
-	    nullptr;        // optional
-	pipelineInfo.pColorBlendState = &colorBlending;
-	pipelineInfo.pDynamicState    = &dynamicState;
+	pipelineInfo.pDepthStencilState  = &depthStencil;
+	pipelineInfo.pColorBlendState    = &colorBlending;
+	pipelineInfo.pDynamicState       = &dynamicState;
 
 	pipelineInfo.layout = pipelineLayout;
 

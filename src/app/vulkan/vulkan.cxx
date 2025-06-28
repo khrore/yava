@@ -13,14 +13,15 @@ Vulkan::Vulkan(Window &window)
 	createSurface();
 	pickPhysicalDevice();
 	createLogicalDevice();
+	createCommandPool();
+	createDescriptorSetLayout();
 
 	createSwapChain();
 	createImageViews();
 	createRenderPass();
-	createDescriptorSetLayout();
 	createGraphicsPipline();
+	createDepthResources();
 	createFramebuffer();
-	createCommandPool();
 
 	createTextureImage();
 	createTextureImageView();

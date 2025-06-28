@@ -61,6 +61,8 @@ class Vulkan
 	void destroySyncObjects();
 	void destroyDescriptorPool();
 	void destroyCommandPool();
+
+	void destroyDepthResources();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();
 	void destrpyDescriptorSetLayout();

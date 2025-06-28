@@ -131,13 +131,6 @@ void Vulkan::initInstance()
 	    vkExtensionCount);
 	vkEnumerateInstanceExtensionProperties(
 	    nullptr, &vkExtensionCount, vkExtensions.data());
-
-	std::cout << "Available extensions:" << std::endl;
-	for (const auto &vkExtension : vkExtensions)
-	{
-		std::cout << "   a " << vkExtension.extensionName
-		          << std::endl;
-	}
 }
 
 void Vulkan::destroyInstance()
