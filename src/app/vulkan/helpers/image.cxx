@@ -6,8 +6,9 @@ namespace App
 {
 void VkHelpers::createImage(
     VkDevice device, VkPhysicalDevice physicalDevice,
-    uint32_t width, uint32_t height, VkFormat format,
-    VkImageTiling tiling, VkImageUsageFlags usage,
+    uint32_t width, uint32_t height, uint32_t mipLevels,
+    VkFormat format, VkImageTiling tiling,
+    VkImageUsageFlags     usage,
     VkMemoryPropertyFlags properties, VkImage &image,
     VkDeviceMemory &imageMemory)
 {
@@ -17,7 +18,7 @@ void VkHelpers::createImage(
 	imageInfo.extent.width  = width;
 	imageInfo.extent.height = height;
 	imageInfo.extent.depth  = 1;
-	imageInfo.mipLevels     = 1;
+	imageInfo.mipLevels     = mipLevels;
 	imageInfo.arrayLayers   = 1;
 	imageInfo.format        = format;
 	imageInfo.tiling        = tiling;
@@ -56,8 +57,8 @@ void VkHelpers::createImage(
 }
 
 VkImageView VkHelpers::createImageView(
-    VkDevice device, VkImage image, VkFormat format,
-    VkImageAspectFlags aspectFlags)
+    VkDevice device, VkImage image, uint32_t mipLevels,
+    VkFormat format, VkImageAspectFlags aspectFlags)
 {
 	VkImageViewCreateInfo viewInfo{};
 	viewInfo.sType =
@@ -67,7 +68,7 @@ VkImageView VkHelpers::createImageView(
 	viewInfo.format   = format;
 	viewInfo.subresourceRange.aspectMask     = aspectFlags;
 	viewInfo.subresourceRange.baseMipLevel   = 0;
-	viewInfo.subresourceRange.levelCount     = 1;
+	viewInfo.subresourceRange.levelCount     = mipLevels;
 	viewInfo.subresourceRange.baseArrayLayer = 0;
 	viewInfo.subresourceRange.layerCount     = 1;
 	// left out the explicit viewInfo.components
@@ -88,8 +89,8 @@ VkImageView VkHelpers::createImageView(
 void VkHelpers::translationImageLayout(
     VkDevice device, VkQueue graphicQueue,
     VkCommandPool commandPool, VkImage image,
-    VkFormat format, VkImageLayout oldLayout,
-    VkImageLayout newLayout)
+    uint32_t mipLevels, VkFormat format,
+    VkImageLayout oldLayout, VkImageLayout newLayout)
 {
 	VkCommandBuffer commandBuffer =
 	    beginSingleTimeCommands(device, commandPool);
@@ -121,7 +122,7 @@ void VkHelpers::translationImageLayout(
 	}
 
 	barrier.subresourceRange.baseMipLevel   = 0;
-	barrier.subresourceRange.levelCount     = 1;
+	barrier.subresourceRange.levelCount     = mipLevels;
 	barrier.subresourceRange.baseArrayLayer = 0;
 	barrier.subresourceRange.layerCount     = 1;
 

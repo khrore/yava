@@ -91,7 +91,7 @@ void Vulkan::createSwapChain()
 
 void Vulkan::cleanupSwapChain()
 {
-    destroyDepthResources();
+	destroyDepthResources();
 	destroyFramebuffer();
 	destoryImageViews();
 	destroySwapChain();
@@ -131,7 +131,7 @@ void Vulkan::createImageViews()
 	{
 		swapChain.imageViews[i] =
 		    VkHelpers::createImageView(
-		        vkContext.device, swapChain.images[i],
+		        vkContext.device, swapChain.images[i], 1,
 		        swapChain.imageFormat,
 		        VK_IMAGE_ASPECT_COLOR_BIT);
 	}

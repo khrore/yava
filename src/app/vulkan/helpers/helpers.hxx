@@ -194,8 +194,8 @@ class VkHelpers
 	static void translationImageLayout(
 	    VkDevice device, VkQueue graphicQueue,
 	    VkCommandPool commandPool, VkImage image,
-	    VkFormat format, VkImageLayout oldLayout,
-	    VkImageLayout newLayout);
+	    uint32_t mipLevels, VkFormat format,
+	    VkImageLayout oldLayout, VkImageLayout newLayout);
 
 	static void copyBufferToImage(
 	    VkDevice device, VkQueue graphicQueue,
@@ -205,14 +205,15 @@ class VkHelpers
 	// Image
 	static void createImage(
 	    VkDevice device, VkPhysicalDevice physicalDevice,
-	    uint32_t width, uint32_t height, VkFormat format,
-	    VkImageTiling tiling, VkImageUsageFlags usage,
+	    uint32_t width, uint32_t height, uint32_t mipLevels,
+	    VkFormat format, VkImageTiling tiling,
+	    VkImageUsageFlags     usage,
 	    VkMemoryPropertyFlags properties, VkImage &image,
 	    VkDeviceMemory &imageMemory);
 
 	static VkImageView
 	    createImageView(VkDevice device, VkImage image,
-	                    VkFormat           format,
+	                    uint32_t mipLevels, VkFormat format,
 	                    VkImageAspectFlags aspectFlags);
 
 	// Swap Chain
@@ -254,6 +255,13 @@ class VkHelpers
 	    findDepthFormat(VkPhysicalDevice physicalDevice);
 
 	static bool hasStancilComponent(VkFormat format);
+
+	static void
+	    generateMipmaps(VkHelpers::VkContext &context,
+	                    VkCommandPool         commandPool,
+	                    VkImage image, VkFormat imageFormat,
+	                    int32_t texWidth, int32_t texHeight,
+	                    uint32_t mipLevels);
 };
 }        // namespace App
 

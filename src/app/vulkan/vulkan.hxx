@@ -109,17 +109,18 @@ class Vulkan
 	uint32_t currentFrame = 0;
 
 	std::vector<VkHelpers::Vertex> vertices;
-	VkBuffer                             vertexBuffer;
-	VkDeviceMemory                       vertexBufferMemory;
+	VkBuffer                       vertexBuffer;
+	VkDeviceMemory                 vertexBufferMemory;
 
 	std::vector<uint32_t> indices;
-	VkBuffer                    indexBuffer;
-	VkDeviceMemory              indexBufferMemory;
+	VkBuffer              indexBuffer;
+	VkDeviceMemory        indexBufferMemory;
 
 	std::vector<VkBuffer>       mvpBuffers;
 	std::vector<VkDeviceMemory> mvpBuffersMemory;
 	std::vector<void *>         mvpBuffersMapped;
 
+	uint32_t       mipLevels;
 	VkImage        textureImage;
 	VkDeviceMemory textureImageMemory;
 	VkImageView    textureImageView;

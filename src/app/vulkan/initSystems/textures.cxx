@@ -2,6 +2,7 @@
 
 #include "app/vulkan/settings/model.hxx"
 
+#include <cmath>
 #include <cstring>
 #include <stdexcept>
 
@@ -17,6 +18,10 @@ void Vulkan::createTextureImage()
 	    Settings::TEX_MODEL_PATH.c_str(), &texWidth,
 	    &texHeight, &texChannels, STBI_rgb_alpha);
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+	mipLevels = static_cast<uint32_t>(std::floor(std::log2(
+	                std::max(texWidth, texHeight)))) +
+	            1;
 
 	if (!pixels)
 	{
@@ -43,29 +48,37 @@ void Vulkan::createTextureImage()
 
 	VkHelpers::createImage(
 	    vkContext.device, vkContext.physicalDevice,
-	    texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB,
-	    VK_IMAGE_TILING_OPTIMAL,
-	    VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+	    texWidth, texHeight, mipLevels,
+	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+	    VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+	        VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 	        VK_IMAGE_USAGE_SAMPLED_BIT,
 	    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage,
 	    textureImageMemory);
 
 	VkHelpers::translationImageLayout(
 	    vkContext.device, vkContext.graphicQueue,
-	    commandPool, textureImage, VK_FORMAT_R8G8B8A8_SRGB,
-	    VK_IMAGE_LAYOUT_UNDEFINED,
+	    commandPool, textureImage, mipLevels,
+	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
 	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
 	VkHelpers::copyBufferToImage(
 	    vkContext.device, vkContext.graphicQueue,
 	    commandPool, stagingBuffer, textureImage,
 	    static_cast<uint32_t>(texWidth),
 	    static_cast<uint32_t>(texHeight));
 
-	VkHelpers::translationImageLayout(
-	    vkContext.device, vkContext.graphicQueue,
-	    commandPool, textureImage, VK_FORMAT_R8G8B8A8_SRGB,
-	    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-	    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	// VkHelpers::translationImageLayout(
+	//     vkContext.device, vkContext.graphicQueue,
+	//     commandPool, textureImage, mipLevels,
+	//     VK_FORMAT_R8G8B8A8_SRGB,
+	//     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+	//     VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+	VkHelpers::generateMipmaps(
+	    vkContext, commandPool, textureImage,
+	    VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight,
+	    mipLevels);
 
 	vkDestroyBuffer(vkContext.device, stagingBuffer,
 	                nullptr);
@@ -83,7 +96,7 @@ void Vulkan::destroyTextureImage()
 void Vulkan::createTextureImageView()
 {
 	textureImageView = VkHelpers::createImageView(
-	    vkContext.device, textureImage,
+	    vkContext.device, textureImage, mipLevels,
 	    VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
@@ -121,9 +134,9 @@ void Vulkan::createTextureSampler()
 	samplerInfo.compareEnable           = VK_FALSE;
 	samplerInfo.compareOp  = VK_COMPARE_OP_ALWAYS;
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-	samplerInfo.mipLodBias = 0.0f;
-	samplerInfo.minLod     = 0.0f;
-	samplerInfo.maxLod     = 0.0f;
+	samplerInfo.minLod     = 0.0f;        // optional
+	samplerInfo.maxLod     = static_cast<float>(mipLevels);
+	samplerInfo.mipLodBias = 0.0f;        // optional
 
 	if (vkCreateSampler(vkContext.device, &samplerInfo,
 	                    nullptr,
