@@ -34,6 +34,7 @@ class Vulkan
 	void createFramebuffer();
 	void createCommandPool();
 
+	void createColorResources();
 	void createDepthResources();
 
 	void createTextureImage();
@@ -64,6 +65,7 @@ class Vulkan
 	void destroyDescriptorPool();
 	void destroyCommandPool();
 
+    void destroyColorResources();
 	void destroyDepthResources();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();
@@ -129,5 +131,12 @@ class Vulkan
 	VkImage        depthImage;
 	VkDeviceMemory depthImageMemory;
 	VkImageView    depthImageView;
+
+	VkSampleCountFlagBits msaaSamples =
+	    VK_SAMPLE_COUNT_1_BIT;
+
+	VkImage        colorImage;
+	VkDeviceMemory colorImageMemory;
+	VkImageView    colorImageView;
 };
 }        // namespace App

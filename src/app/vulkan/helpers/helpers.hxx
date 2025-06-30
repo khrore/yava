@@ -206,8 +206,8 @@ class VkHelpers
 	static void createImage(
 	    VkDevice device, VkPhysicalDevice physicalDevice,
 	    uint32_t width, uint32_t height, uint32_t mipLevels,
-	    VkFormat format, VkImageTiling tiling,
-	    VkImageUsageFlags     usage,
+	    VkSampleCountFlagBits numSamples, VkFormat format,
+	    VkImageTiling tiling, VkImageUsageFlags usage,
 	    VkMemoryPropertyFlags properties, VkImage &image,
 	    VkDeviceMemory &imageMemory);
 
@@ -217,7 +217,6 @@ class VkHelpers
 	                    VkImageAspectFlags aspectFlags);
 
 	// Swap Chain
-
 	static bool checkDeviceExtensionSupport(
 	    VkPhysicalDevice physicalDevice);
 
@@ -262,6 +261,10 @@ class VkHelpers
 	                    VkImage image, VkFormat imageFormat,
 	                    int32_t texWidth, int32_t texHeight,
 	                    uint32_t mipLevels);
+
+	// MSAA
+	static VkSampleCountFlagBits getMaxUsableSampleCount(
+	    VkPhysicalDevice physicalDevice);
 };
 }        // namespace App
 

@@ -92,6 +92,7 @@ void Vulkan::createSwapChain()
 void Vulkan::cleanupSwapChain()
 {
 	destroyDepthResources();
+	destroyColorResources();
 	destroyFramebuffer();
 	destoryImageViews();
 	destroySwapChain();
@@ -153,8 +154,9 @@ void Vulkan::createFramebuffer()
 
 	for (size_t i = 0; i < swapChain.imageViews.size(); i++)
 	{
-		std::array<VkImageView, 2> attachments = {
-		    swapChain.imageViews[i], depthImageView};
+		std::array<VkImageView, 3> attachments = {
+		    colorImageView, depthImageView,
+		    swapChain.imageViews[i]};
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType =

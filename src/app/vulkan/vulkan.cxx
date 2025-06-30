@@ -20,6 +20,7 @@ Vulkan::Vulkan(Window &window)
 	createImageViews();
 	createRenderPass();
 	createGraphicsPipline();
+	createColorResources();
 	createDepthResources();
 	createFramebuffer();
 

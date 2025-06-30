@@ -159,12 +159,11 @@ void Vulkan::createGraphicsPipline()
 	VkPipelineMultisampleStateCreateInfo multisampling{};
 	multisampling.sType =
 	    VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.sampleShadingEnable = VK_FALSE;
-	multisampling.rasterizationSamples =
-	    VK_SAMPLE_COUNT_1_BIT;
-	multisampling.minSampleShading =
-	    1.0f;                                   // optional
-	multisampling.pSampleMask = nullptr;        // optional
+	multisampling.sampleShadingEnable  = VK_FALSE;
+	multisampling.rasterizationSamples = msaaSamples;
+	multisampling.sampleShadingEnable  = VK_TRUE;
+	multisampling.minSampleShading = .2f;        // optional
+	multisampling.pSampleMask = nullptr;         // optional
 	multisampling.alphaToCoverageEnable =
 	    VK_FALSE;        // optional
 	multisampling.alphaToOneEnable =

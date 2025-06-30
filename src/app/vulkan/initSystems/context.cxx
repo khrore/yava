@@ -77,6 +77,7 @@ void Vulkan::createLogicalDevice()
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
+    deviceFeatures.sampleRateShading = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -147,6 +148,9 @@ void Vulkan::pickPhysicalDevice()
 		                                vkContext.surface))
 		{
 			vkContext.physicalDevice = physicalDevice;
+			msaaSamples =
+			    VkHelpers::getMaxUsableSampleCount(
+			        vkContext.physicalDevice);
 			break;
 		}
 	}
