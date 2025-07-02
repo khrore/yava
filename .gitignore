@@ -1,5 +1,4 @@
 build/
 .vscode/
 .cache/
-TODO.txt
-libs/
+TODO.md
