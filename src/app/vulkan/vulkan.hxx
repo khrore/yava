@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <vector>
 
-
 namespace App
 {
 class Vulkan
@@ -65,7 +64,7 @@ class Vulkan
 	void destroyDescriptorPool();
 	void destroyCommandPool();
 
-    void destroyColorResources();
+	void destroyColorResources();
 	void destroyDepthResources();
 	void destroyFramebuffer();
 	void destroyGraphicsPipline();

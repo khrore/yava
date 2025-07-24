@@ -1,5 +1,6 @@
 #include "app/vulkan/vulkan.hxx"
 #include <stdexcept>
+#include <stdio>
 #include <unordered_map>
 
 #include "app/vulkan/settings/model.hxx"
@@ -15,13 +16,13 @@ void Vulkan::loadModel()
 	tinyobj::attrib_t                attrib;
 	std::vector<tinyobj::shape_t>    shapes;
 	std::vector<tinyobj::material_t> materials;
-	std::string                      err;
+	std::string                      warn, err;
 
 	std::unordered_map<VkHelpers::Vertex, uint32_t>
 	    uniqueVertices{};
 
 	if (!tinyobj::LoadObj(&attrib, &shapes, &materials,
-	                      &err,
+	                      &warn, &err,
 	                      Settings::OBJ_MODEL_PATH.c_str()))
 	{
 		throw std::runtime_error(err);

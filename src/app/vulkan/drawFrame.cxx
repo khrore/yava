@@ -12,8 +12,8 @@ void Vulkan::drawFrame()
 
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(
-	    vkContext.device, swapChain.instance,
-	    UINT64_MAX, imageAvailableSemaphores[currentFrame],
+	    vkContext.device, swapChain.instance, UINT64_MAX,
+	    imageAvailableSemaphores[currentFrame],
 	    VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR)
@@ -74,11 +74,10 @@ void Vulkan::drawFrame()
 	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores    = signalSemaphores;
 
-	VkSwapchainKHR swapChains[] = {
-	    swapChain.instance};
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains    = swapChains;
-	presentInfo.pImageIndices  = &imageIndex;
+	VkSwapchainKHR swapChains[] = {swapChain.instance};
+	presentInfo.swapchainCount  = 1;
+	presentInfo.pSwapchains     = swapChains;
+	presentInfo.pImageIndices   = &imageIndex;
 
 	presentInfo.pResults = nullptr;
 
