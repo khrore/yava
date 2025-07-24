@@ -1,6 +1,5 @@
 #include "app/vulkan/vulkan.hxx"
 #include <stdexcept>
-#include <stdio>
 #include <unordered_map>
 
 #include "app/vulkan/settings/model.hxx"

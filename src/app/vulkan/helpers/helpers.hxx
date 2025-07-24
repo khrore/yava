@@ -2,11 +2,11 @@
 
 #include <functional>
 #include <iostream>
+#include <optional>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/hash.hpp>
-
 
 #define GLFW_INCLUDE_VULKAN 1
 #include <GLFW/glfw3.h>

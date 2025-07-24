@@ -21,9 +21,9 @@
         devShells.default = pkgs.mkShell rec {
           nativeBuildInputs = [ pkgs.pkg-config ];
           buildInputs = with pkgs; [
-            llvmPackages.clangWithLibcAndBasicRtAndLibcxx
+            clangStdenv
+            libcxx
             mold
-            llvmPackages.bintools
 
             alsa-lib
             wayland
@@ -48,6 +48,8 @@
             vulkan-tools-lunarg
             vulkan-extension-layer
             vulkan-validation-layers
+
+            clang-tools
           ];
 
           EDITOR = "nvim";
